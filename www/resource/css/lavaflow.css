@@ -1,0 +1,26 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, STHeiTi, sans-serif;
+    margin: 70px 0 30px;
+}
+
+@font-face {
+    font-family: 'Glyphicons Halflings';
+
+    src: url('/resource/font/glyphicons-halflings-regular.eot');
+    src: url('/resource/font/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/resource/font/glyphicons-halflings-regular.woff') format('woff'), url('/resource/font/glyphicons-halflings-regular.ttf') format('truetype'), url('/resource/font/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
+.lp-index-jumbotron {
+    margin-top: -20px;
+    text-align: center;
+}
+.lp-index-jumbotron .form-group {
+    display: inline-block;
+    width: 480px;
+}
+.lp-index-jumbotron .form-control {
+    height: 45px;
+}
+.lp-index-jumbotron .btn {
+    vertical-align: top;
+}

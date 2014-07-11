@@ -1,0 +1,35 @@
+<% include inc/header.html %>
+
+<div class="container">
+    <form role="form" action="/home/index/save" method="POST">
+        <div class="form-group">
+            <label for="lf-capture-url">URL</label>
+            <input type="url" class="form-control" id="lf-capture-url" name="url" readonly>
+        </div>
+        <div class="form-group">
+            <label for="lf-capture-title">标题（必填）</label>
+            <input type="text" class="form-control" id="lf-capture-title" name="title">
+        </div>
+        <div class="form-group">
+            <label for="lf-capture-tag">标签（必填）</label>
+            <input type="text" class="form-control" id="lf-capture-tag" name="tag">
+            <p class="help-block">多个标签使用逗号隔开，例如：JavaScript,HTML5,CSS3</p>
+        </div>
+        <div class="form-group">
+            <label for="lf-capture-contributor">您的大名（必填）</label>
+            <input type="text" class="form-control" id="lf-capture-contributor" name="contributor">
+        </div>
+        <div class="form-group">
+            <label for="lf-capture-website">个人网址（可选）</label>
+            <input type="text" class="form-control" id="lf-capture-website" name="website">
+            <p class="help-block">我信任你，不会填写广告链接</p>
+        </div>
+        <div class="form-group">
+            <label for="lf-capture-content">内容（必填）</label>
+            <textarea class="form-control" rows="20" id="lf-capture-content" name="content"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">提交</button>
+    </form>
+</div>
+
+<% include inc/footer.html %>
