@@ -5,9 +5,9 @@ module.exports = {
 
   db_type: 'mysql', // 数据库类型
   db_host: '127.0.0.1', // 服务器地址
-  db_port: '', // 端口
-  db_name: '', // 数据库名
+  db_port: '3306', // 端口
+  db_name: 'lavaflow', // 数据库名
   db_user: 'root', // 用户名
-  db_pwd: '', // 密码
-  db_prefix: 'think_', // 数据库表前缀
+  db_pwd: 'admin', // 密码
+  db_prefix: 'lf_', // 数据库表前缀
 };

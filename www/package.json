@@ -1,8 +1,0 @@
-{
-    "name": "lavaflow",
-    "description": "Lavaflow",
-    "version": "0.0.1",
-    "dependencies": {
-        "thinkjs": "^0.6.9"
-    }
-}

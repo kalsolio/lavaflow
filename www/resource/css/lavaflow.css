@@ -24,3 +24,26 @@ body {
 .lp-index-jumbotron .btn {
     vertical-align: top;
 }
+.lp-index-jumbotron .alert {
+    display: inline-block;
+    width: 553px;
+}
+
+#markdownEditor {
+    height: 450px;
+}
+
+.lp-detail-article header {
+    border-bottom: 1px solid #eee;
+}
+.lp-detail-article footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+.lp-detail-aside .qrcode .panel-body {
+    height: 260px;
+}
+.lp-detail-aside ul {
+    padding-left: 15px;
+}

@@ -1,39 +1,77 @@
 <% include inc/header.html %>
 
 <div class="container">
-    <article class="lp-detail-article">
-        <header>
-            <h1>TITLETITLETITLE</h1>
-            <p>原文地址：</p>
-        </header>
-
-        内容
-
-        <footer>
-            标签
-        </footer>
-    </article>
-
-    <aside class="lp-detail-aside">
-        <section class="lp-detail-qrcode">
-
-        </section>
-        <section class="lp-detail-version">
-            日期 - 贡献者
-
-            纠错
-        </section>
-        <section class="lp-detail-hot">
-
-        </section>
-        <section class="lp-detail-latest">
-
-        </section>
-    </aside>
-
-    <div class="lp-detail-comment">
-        多说
+    <% if (http.get.msg) { %>
+        <div class="alert alert-info fade in" role="alert">
+              <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+              <%= http.get.msg %>
+        </div>
+    <% } %>
+    <div class="row">
+        <div class="col-md-8 col-lg-9 lp-detail-article">
+            <div class="content">
+                <header>
+                    <h1><%= article.title %></h1>
+                    <p>原文地址：<a href="<%= article.url %>" target="_blank"><%= article.url %></a></p>
+                </header>
+                <%- article.content %>
+                <footer>
+                    <p>本文贡献者：<a href="<%= article.contributor_website %>" target="_blank"><%= article.contributor %></a>，个人网站：<a href="<%= article.contributor_website %>" target="_blank"><%= article.contributor_website %></a>，当前版本：<strong>v<%= article.version %></strong></p>
+                    <p><span class="glyphicon glyphicon-tags"></span>　标签：
+                        <% for (var i = 0, tags = article.tag.split(','); i < tags.length; i++) { %>
+                            <a href="/home/index/search?tag=<%= encodeURIComponent(tags[i]) %>"><span class="label label-default"><%= tags[i] %></span></a>
+                        <% } %>
+                    </p>
+                </footer>
+            </div>
+            <div class="duoshuo">
+                <!-- 多说 -->
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-3 lp-detail-aside">
+            <div class="panel panel-default qrcode">
+                <div class="panel-heading">本文二维码</div>
+                <div class="panel-body text-center"></div>
+            </div>
+            <div class="panel panel-default version">
+                <div class="panel-heading">版本历史</div>
+                <div class="panel-body">
+                    <ul>
+                        <% for (var i = 0; i < relatives.length; i++) { %>
+                            <li><a href="/home/index/detail/id/<%= relatives[i].id %>">v<%= relatives[i].version %> <%= relatives[i].create_time %></a>，贡献者：<a href="<%= relatives[i].contributor_website %>" target="_blank"><%= relatives[i].contributor %></a></li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-default latest">
+                <div class="panel-heading">最新收录</div>
+                <div class="panel-body">
+                    <ul>
+                        <% for (var i = 0; i < latest.length; i++) { %>
+                            <li><a href="/home/index/detail/id/<%= latest[i].id %>"><%= latest[i].title %></a>，贡献者：<a href="<%= latest[i].contributor_website %>" target="_blank"><%= latest[i].contributor %></a></li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+<script src="/resource/lib/qrcode/jquery.qrcode.min.js"></script>
+<script>
+    $(function() {
+        var $alert = $('.alert-info');
+        if ($alert.length > 0) {
+            setTimeout(function() {
+                $alert.alert('close');
+            }, 3e3);
+        }
+
+        $('.qrcode .panel-body').qrcode({
+            width: 224,
+            height: 224,
+            text: window.location.href
+        });
+    });
+</script>
 <% include inc/footer.html %>

@@ -1,35 +1,67 @@
 <% include inc/header.html %>
 
 <div class="container">
-    <form role="form" action="/home/index/save" method="POST">
+    <form role="form" action="/home/index/saveCapture" method="POST">
+        <% if (attrs.lastVersionUrl) { %>
+            <div class="alert alert-info" role="alert">
+                URL已存在，最新版本：<a href="<%= attrs.lastVersionUrl %>"><%= attrs.lastVersionUrl %></a>
+            </div>
+        <% } %>
         <div class="form-group">
             <label for="lf-capture-url">URL</label>
-            <input type="url" class="form-control" id="lf-capture-url" name="url" readonly>
+            <input type="url" class="form-control" id="lf-capture-url" name="url" value="<%= attrs.url %>" readonly required>
         </div>
         <div class="form-group">
             <label for="lf-capture-title">标题（必填）</label>
-            <input type="text" class="form-control" id="lf-capture-title" name="title">
+            <input type="text" class="form-control" id="lf-capture-title" name="title" value="<%= attrs.title %>" required>
         </div>
         <div class="form-group">
             <label for="lf-capture-tag">标签（必填）</label>
-            <input type="text" class="form-control" id="lf-capture-tag" name="tag">
+            <input type="text" class="form-control" id="lf-capture-tag" name="tag" value="<%= attrs.tag || '' %>" required>
             <p class="help-block">多个标签使用逗号隔开，例如：JavaScript,HTML5,CSS3</p>
         </div>
         <div class="form-group">
-            <label for="lf-capture-contributor">您的大名（必填）</label>
+            <label for="lf-capture-contributor">您的大名</label>
             <input type="text" class="form-control" id="lf-capture-contributor" name="contributor">
         </div>
         <div class="form-group">
-            <label for="lf-capture-website">个人网址（可选）</label>
+            <label for="lf-capture-website">个人网址</label>
             <input type="text" class="form-control" id="lf-capture-website" name="website">
             <p class="help-block">我信任你，不会填写广告链接</p>
         </div>
         <div class="form-group">
             <label for="lf-capture-content">内容（必填）</label>
-            <textarea class="form-control" rows="20" id="lf-capture-content" name="content"></textarea>
+            <div id="markdownEditor" class="form-control"><%= attrs.content %></div>
+            <textarea name="content" style="display:none;" required><%= attrs.content %></textarea>
         </div>
         <button type="submit" class="btn btn-primary">提交</button>
     </form>
 </div>
 
+<script src="/resource/lib/ace/ace.js"></script>
+<script>
+(function(window) {
+    var $content = $('textarea[name="content"]');
+    var editor = ace.edit('markdownEditor');
+    var session = editor.getSession();
+    editor.setTheme('ace/theme/github');
+    session.setMode('ace/mode/markdown');
+    session.on('change', function(e) {
+        $content.html(session.getValue());
+    });
+
+    var localStorage = window.localStorage;
+
+    var $contributor = $('input[name="contributor"]');
+    var $website = $('input[name="website"]');
+    $contributor.on('change', function() {
+        localStorage.setItem('lavaflow/capture/contributor', $contributor.val());
+    });
+    $website.on('change', function() {
+        localStorage.setItem('lavaflow/capture/website', $website.val());
+    });
+    $contributor.val(localStorage.getItem('lavaflow/capture/contributor'));
+    $website.val(localStorage.getItem('lavaflow/capture/website'));
+}(window));
+</script>
 <% include inc/footer.html %>

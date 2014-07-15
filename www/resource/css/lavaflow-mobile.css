@@ -2,13 +2,7 @@
     display: block;
     width: 100%;
 }
-.lp-index-jumbotron .form-control {
-    height: 34px;
-}
-.lp-index-jumbotron .btn-lg {
-    font-size: 14px;
-}
-
-.lp-detail-aside {
-    display: none;
+.lp-index-jumbotron .alert {
+    display: block;
+    width: auto;
 }
