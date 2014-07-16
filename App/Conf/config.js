@@ -9,5 +9,5 @@ module.exports = {
   db_name: 'lavaflow', // 数据库名
   db_user: 'root', // 用户名
   db_pwd: 'admin', // 密码
-  db_prefix: 'lf_', // 数据库表前缀
+  db_prefix: 'lf_' // 数据库表前缀
 };

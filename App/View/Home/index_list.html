@@ -1,7 +1,45 @@
 <% include inc/header.html %>
 
 <div class="container">
-
+    <% if (articles.length === 0) { %>
+        <p class="lead text-center">没有找到任何你想要的数据</p>
+    <% } else { %>
+        <div class="lf-list">
+            <% for (var i = 0; i < articles.length; i++) { %>
+                <div class="media">
+                    <div class="media-body">
+                        <h4 class="media-heading"><a href="/detail/id/<%= articles[i].id %>"><%= articles[i].title %></a></h4>
+                        <p class="lf-info"><span class="glyphicon glyphicon-tags"></span>
+                            <% for (var j = 0, tags = articles[i].tag.split(","); j < tags.length; j++) { %>
+                                <% if (tags[j]) { %>
+                                    <a href="/list?tag=<%= encodeURIComponent(tags[j]) %>"><span class="label label-default"><%= tags[j] %></span></a>
+                                <% } %>
+                            <% } %>　
+                            版本：v<%= articles[i].version %> / <%= formatDate(articles[i].create_time) %>
+                        </p>
+                        <%= articles[i].content.substring(0, 300) %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        <% if (articles.length >= size) { %>
+            <div class="lf-loading">Loading...</div>
+        <% } %>
+    <% } %>
 </div>
+
+<% if (articles.length >= size) { %>
+<script src="/resource/lib/ejs-0.8.6/ejs.min.js"></script>
+<script src="/resource/lib/moment-2.7.0/moment.min.js"></script>
+<script>
+window.CONF = {
+    keyword: '<%= http.get.keyword || '' %>',
+    tag: '<%= http.get.tag || '' %>',
+    page: <%= http.get.page || 1 %>,
+    size: <%= size %>
+};
+</script>
+<script src="/resource/js/list.js"></script>
+<% } %>
 
 <% include inc/footer.html %>

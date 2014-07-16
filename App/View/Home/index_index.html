@@ -1,14 +1,15 @@
 <% include inc/header.html %>
 
-<div class="jumbotron lp-index-jumbotron">
+<div class="jumbotron lf-index-jumbotron">
     <div class="container">
         <h1>Lavaflow</h1>
-        <form role="form" action="/home/index/capture" method="GET">
+        <form role="form" action="/capture" method="GET">
             <% if (http.get.error) { %>
                 <div class="alert alert-danger" role="alert"><%= http.get.error %></div>
             <% } %>
             <div class="form-group">
-                <input type="url" name="url" class="form-control" placeholder="输入文章URL" value="<%= http.get.url || '' %>" required>
+                <input type="url" name="url" class="form-control input-lg" placeholder="输入文章URL" value="<%= http.get.url || '' %>" required>
+                <input type="hidden" name="selector" value="">
             </div>
             <button type="submit" class="btn btn-primary btn-lg">收录</button>
         </form>

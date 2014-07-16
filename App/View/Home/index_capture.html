@@ -1,7 +1,7 @@
 <% include inc/header.html %>
 
 <div class="container">
-    <form role="form" action="/home/index/saveCapture" method="POST">
+    <form role="form" action="/saveCapture" method="POST">
         <% if (attrs.lastVersionUrl) { %>
             <div class="alert alert-info" role="alert">
                 URL已存在，最新版本：<a href="<%= attrs.lastVersionUrl %>"><%= attrs.lastVersionUrl %></a>
@@ -38,7 +38,7 @@
     </form>
 </div>
 
-<script src="/resource/lib/ace/ace.js"></script>
+<script src="/resource/lib/ace-1.1.5-noconflict/ace.js"></script>
 <script>
 (function(window) {
     var $content = $('textarea[name="content"]');

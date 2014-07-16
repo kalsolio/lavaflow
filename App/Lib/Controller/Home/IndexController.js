@@ -4,7 +4,7 @@ module.exports = Controller(function() {
     var request = require('request');
     var cheerio = require('cheerio');
     var marked = require('marked');
-    var html2markdown = require('html2markdown');
+    var toMarkdown = require('to-markdown').toMarkdown;
     var validator = require('validator');
 
     function getPage(url) {
@@ -33,6 +33,11 @@ module.exports = Controller(function() {
     }
 
     return {
+        init: function(http) {
+            this.super('init', http);
+            this.assign('title', '');
+        },
+
         indexAction: function() {
             return this.display();
         },
@@ -74,11 +79,38 @@ module.exports = Controller(function() {
                 $('style').remove();
                 title = $('title').html();
 
-                // '.tab-content .comment-content' 是Github文章
-                content = getContent($, ['article .content', '.content', '.tab-content .comment-content', 'article', '.article', '.post', 'body']);
+                var selector = self.get('selector');
+                var selectors = [
+                    '.tab-content .comment-content .comment-body', // Github issue
+                    '#content .content_text .content_banner', // www.alloyteam.com
+                    '#content .content-bd .post-bd', // ued.taobao.com
+                    '#content article .entry', // www.aliued.cn
+                    '#content .entry-content', // www.ruanyifeng.com
+                    '#content .entry', // www.zhangxinxu.com
+                    '#content .content', // www.coolshell.cn
+                    '#content .entrybody', // www.cssforest.org
+                    '.page .pattern-bg-lighter section:nth-child(2)', // www.html5rocks.com
+                    '.content .article', // www.36kr.com
+                    'article .content',
+                    '.content',
+                    '.content-bd',
+                    '#content',
+                    'article .post',
+                    'article .post-bd',
+                    'article',
+                    '.article',
+                    '.post',
+                    '.post-bd',
+                    'body'
+                ];
+                if (selector) {
+                    selectors.unshift(selector);
+                }
+                content = getContent($, selectors);
 
                 // 过滤掉所有html2markdown不解析的标签
                 content = content.replace(/<!--.*-->/gi, '');
+                content = content.replace(/\t/g, '    ');
                 content = content.replace(/<(\/)?([^>]*)\/?>/gi, function(s, s1, s2) {
                     var tag = s2.split(' ')[0];
                     if (/^code$/i.test(tag)) {
@@ -86,8 +118,7 @@ module.exports = Controller(function() {
                     }
                     return /^(h[1-9]|hr|br|title|b|strong|i|em|dfn|var|city|span|ul|ol|dl|li|blockquote|pre|p|div|img|a)$/i.test(tag) ? s : '';
                 });
-                content = content ? html2markdown(content) : '';
-                content = content.replace(/(<|&lt;)\s*\/?\s*script\s*\/?\s*(<|&gt;)/gi, '```');
+                content = content ? toMarkdown(content) : '';
 
                 attrs.url = url;
                 attrs.title = title;
@@ -142,17 +173,13 @@ module.exports = Controller(function() {
             if (!id) {
                 self.redirectIndex();
             } else {
-                return D('Article').where({ id: id }).select().then(function(article) {
+                return D('Article').getArticle(id).then(function(article) {
                     if (article.length > 0) {
                         return Promise.all([
-                            D('Article').where({ url_id: article[0].url_id }).order('version DESC').select().then(function(relatives) {
-                                return relatives;
-                            }),
-                            D('Article').query('SELECT * FROM (SELECT * FROM __ARTICLE__ ORDER BY version DESC) a GROUP BY url ORDER BY create_time DESC').then(function(latest) {
-                                return latest;
-                            })
+                            D('Article').getArticlesByUrlId(article[0].url_id),
+                            D('Article').getLatest()
                         ]).then(function(data) {
-                            article[0].content = marked(String(article[0].content));
+                            article[0].content = marked(escapeHTML(article[0].content));
                             self.assign('article', article[0]);
                             self.assign('relatives', data[0]);
                             self.assign('latest', data[1]);
@@ -165,9 +192,22 @@ module.exports = Controller(function() {
             }
         },
 
-        listAction: function() {
+        pageSize: 20,
 
-            return this.display();
+        listAction: function() {
+            var self = this;
+            return D('Article').getArticles(self.get('page'), self.pageSize, self.get('keyword'), self.get('tag')).then(function(articles) {
+                self.assign('articles', articles);
+                self.assign('size', self.pageSize);
+                return self.display();
+            });
+        },
+
+        pagingAction: function() {
+            var self = this;
+            return D('Article').getArticles(self.get('page'), self.pageSize, self.get('keyword'), self.get('tag')).then(function(articles) {
+                return self.success(articles);
+            });
         },
 
         tagAction: function() {
@@ -175,17 +215,12 @@ module.exports = Controller(function() {
             return this.display();
         },
 
-        searchAction: function() {
-
-            return this.display();
-        },
-
         redirectIndex: function(error, p) {
-            return this.redirect('/home/index/index' + (error ? '?error=' + encodeURIComponent(error) : '') + (p ? '&' + p : ''));
+            return this.redirect('/index' + (error ? '?error=' + encodeURIComponent(error) : '') + (p ? '&' + p : ''));
         },
 
         redirectDetail: function(msg, id) {
-            return this.redirect('/home/index/detail/id/' + id + '?msg=' + encodeURIComponent(msg));
+            return this.redirect('/detail/id/' + id + '?msg=' + encodeURIComponent(msg));
         }
     };
 });
