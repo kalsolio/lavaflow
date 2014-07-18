@@ -1,5 +1,4 @@
 <% include inc/header.html %>
-
 <div class="jumbotron lf-index-jumbotron">
     <div class="container">
         <h1>Lavaflow</h1>
@@ -15,9 +14,30 @@
         </form>
     </div>
 </div>
-
 <div class="container">
-
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default lf-panel lf-tags">
+                <div class="panel-heading">标签索引</div>
+                <div class="panel-body">
+                    <% for (var i = 0; i < tags.length; i++) { if (i >= 50) { break; } %>
+                        <a href="/list?tag=<%= encodeURIComponent(tags[i]) %>"><span class="label label-default" style="background-color:<%= getTagColor() %>;"><%= tags[i][0] %></span></a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default lf-panel">
+                <div class="panel-heading">最新收录</div>
+                <div class="panel-body">
+                    <ul>
+                        <% for (var i = 0; i < latest.length; i++) { %>
+                            <li><a href="/detail/id/<%= latest[i].id %>"><%= latest[i].title %></a>，贡献者：<%- getContributor(latest[i]) %></li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
 <% include inc/footer.html %>

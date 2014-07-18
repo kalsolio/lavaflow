@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><% if (title) { %><%= title %> - <% } %>Lavaflow</title>
     <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/resource/css/bootstrap-theme-flatly.min.css">
     <link rel="stylesheet" href="/resource/css/lavaflow.css">
     <link rel="stylesheet" media="all and (max-device-width: 768px)" href="/resource/css/lavaflow-mobile.css">
     <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -28,7 +29,6 @@
             <ul class="nav navbar-nav">
                 <li <% if (http.action == 'index' || http.action == 'capture') { %>class="active"<% } %>><a href="/index">提交URL</a></li>
                 <li <% if (http.action == 'list') { %>class="active"<% } %>><a href="/list">收录列表</a></li>
-                <li <% if (http.action == 'tag') { %>class="active"<% } %>><a href="/tag">标签索引</a></li>
             </ul>
             <form class="navbar-form navbar-right" role="form" action="/list" method="GET">
                 <div class="input-group">

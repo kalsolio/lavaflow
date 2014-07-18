@@ -14,8 +14,8 @@
                                 <% if (tags[j]) { %>
                                     <a href="/list?tag=<%= encodeURIComponent(tags[j]) %>"><span class="label label-default"><%= tags[j] %></span></a>
                                 <% } %>
-                            <% } %>　
-                            版本：v<%= articles[i].version %> / <%= formatDate(articles[i].create_time) %>
+                            <% } %> /
+                            版本：<%= getVersion(articles[i]) %>
                         </p>
                         <%= articles[i].content.substring(0, 300) %>
                     </div>

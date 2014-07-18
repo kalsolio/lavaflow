@@ -62,6 +62,10 @@
     });
     $contributor.val(localStorage.getItem('lavaflow/capture/contributor'));
     $website.val(localStorage.getItem('lavaflow/capture/website'));
+
+    $('form').on('submit', function() {
+        $('form button[type="submit"]').attr('disabled', true).html('提交中...');
+    });
 }(window));
 </script>
 <% include inc/footer.html %>

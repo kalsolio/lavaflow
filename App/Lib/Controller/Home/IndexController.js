@@ -39,7 +39,51 @@ module.exports = Controller(function() {
         },
 
         indexAction: function() {
-            return this.display();
+            var self = this;
+            return Promise.all([
+                    self.getTags(),
+                    D('Article').getLatest()
+                ]).then(function(data) {
+                    self.assign('tags', data[0]);
+                    self.assign('latest', data[1]);
+                    return self.display();
+                });
+        },
+
+        getTags: function() {
+            return S('tags').then(function(tagCache) {
+                if (!tagCache || (tagCache.lastModified + 3600 * 1000) < Date.now()) {
+                    return D('Article').getTags().then(function(data) {
+                        var tags = {};
+                        data.forEach(function(o) {
+                            var arr = o.tag.split(',');
+                            arr.forEach(function(t) {
+                                if (t) {
+                                    if (!tags[t]) {
+                                        tags[t] = o.count;
+                                    } else {
+                                        tags[t] += o.count;
+                                    }
+                                }
+                            });
+                        });
+                        var tagArr = [];
+                        for (var t in tags) {
+                            tagArr.push([t, tags[t]]);
+                        }
+                        tagArr.sort(function(a, b) {
+                            return b[1] - a[1];
+                        });
+                        return S('tags', {
+                            lastModified: Date.now(),
+                            tags: tagArr
+                        }).then(function() {
+                            return tagArr;
+                        });
+                    });
+                }
+                return tagCache.tags;
+            });
         },
 
         captureAction: function() {
@@ -56,7 +100,7 @@ module.exports = Controller(function() {
 
                     // 如果文章已收录，那么将URL 提示到页面上
                     if (data.length > 0) {
-                        attrs.lastVersionUrl = 'http://' + self.http.host + '/index/detail/id/' + data[0].last_version_aid;
+                        attrs.lastVersionUrl = 'http://' + self.http.host + '/detail/id/' + data[0].last_version_aid;
                         return D('Article').where({ id: data[0].last_version_aid }).select().then(function(data) {
                             attrs.tag = data[0].tag;
                             return self.capturePage(url, attrs);
@@ -109,14 +153,12 @@ module.exports = Controller(function() {
                 content = getContent($, selectors);
 
                 // 过滤掉所有html2markdown不解析的标签
-                content = content.replace(/<!--.*-->/gi, '');
                 content = content.replace(/\t/g, '    ');
-                content = content.replace(/<(\/)?([^>]*)\/?>/gi, function(s, s1, s2) {
-                    var tag = s2.split(' ')[0];
-                    if (/^code$/i.test(tag)) {
-                        return s1 != '/' ? '<pre>' : '</pre>';
+                content = content.replace(/<(\/)?([^ >]*)( [^\f\n\r\t\v>]*)?\/?>/gi, function(s, s1, s2) {
+                    if (/^pre/i.test(s2)) {
+                        return s1 != '/' ? '<code>' : '</code>';
                     }
-                    return /^(h[1-9]|hr|br|title|b|strong|i|em|dfn|var|city|span|ul|ol|dl|li|blockquote|pre|p|div|img|a)$/i.test(tag) ? s : '';
+                    return /^(h[1-9]|hr|br|title|b|strong|i|em|dfn|var|city|span|ul|ol|dl|li|blockquote|pre|p|div|img|a)$/i.test(s2) ? s : '';
                 });
                 content = content ? toMarkdown(content) : '';
 
@@ -149,7 +191,7 @@ module.exports = Controller(function() {
                     articleData.url_id = data[0].id;
                     articleData.version = (data[0].last_version + 1);
                     return articleModel.addArticle(articleData).then(function(aid) {
-                        return self.redirectDetail('收录成功', aid);
+                        return self.redirectDetail('文章收录成功，当前版本：' + getVersion({ version: articleData.version, create_time: new Date() }), aid);
                     });
                 } else {
                     return urlModel.add({
@@ -158,7 +200,7 @@ module.exports = Controller(function() {
                         articleData.url_id = uid;
                         articleData.version = 1;
                         return articleModel.addArticle(articleData).then(function(aid) {
-                            return self.redirectDetail('收录成功', aid);
+                            return self.redirectDetail('文章收录成功，你是第一个提交此文的人哦！', aid);
                         });
                     });
                 }
@@ -208,11 +250,6 @@ module.exports = Controller(function() {
             return D('Article').getArticles(self.get('page'), self.pageSize, self.get('keyword'), self.get('tag')).then(function(articles) {
                 return self.success(articles);
             });
-        },
-
-        tagAction: function() {
-
-            return this.display();
         },
 
         redirectIndex: function(error, p) {

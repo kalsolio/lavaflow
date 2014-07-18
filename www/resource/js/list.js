@@ -7,8 +7,8 @@
         return window.pageYOffset || window.scrollY || document.documentElement.scrollTop;
     }
 
-    ejs.filters.formatDate = function(date) {
-        return moment(date).format('YYYY-MM-DD HH:mm');
+    ejs.filters.getVersion = function(o) {
+        return 'v' + o.version + '-' + moment(o.create_date).format('YYYYMMDD');
     };
 
     var loading = false;
@@ -27,8 +27,8 @@
                                 <% if (tags[j]) { %>\
                                     <a href="/list?tag=<%= encodeURIComponent(tags[j]) %>"><span class="label label-default"><%= tags[j] %></span></a>\
                                 <% } %>\
-                            <% } %>　\
-                            版本：v<%= articles[i].version %> / <%=: articles[i].create_time | formatDate %>\
+                            <% } %> / \
+                            版本：<%=: articles[i] | getVersion %>\
                         </p>\
                         <%= articles[i].content.substring(0, 300) %>\
                     </div>\

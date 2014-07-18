@@ -4,6 +4,5 @@ module.exports = [
     [/^detail/, 'home/index/detail'],
     [/^saveCapture/, 'home/index/saveCapture'],
     [/^list/, 'home/index/list'],
-    [/^paging/, 'home/index/paging'],
-    [/^tag/, 'home/index/tag']
+    [/^paging/, 'home/index/paging']
 ];

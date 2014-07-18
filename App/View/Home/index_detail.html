@@ -13,7 +13,7 @@
                 <header>
                     <h1><%= article.title %></h1>
                     <p class="source">原文地址：<a href="<%= article.url %>" target="_blank"><%= article.url %></a></p>
-                    <p>贡献者：<%- getContributor(article) %>， 当前版本：<strong>v<%= article.version %> / <%= formatDate(article.create_time) %></strong></p>
+                    <p>贡献者：<%- getContributor(article) %>， 当前版本：<strong><%= getVersion(article) %></strong></p>
                     <p class="lf-info"><span class="glyphicon glyphicon-tags"></span>
                         <% for (var i = 0, tags = article.tag.split(','); i < tags.length; i++) { %>
                             <% if (tags[i]) { %>
@@ -37,7 +37,7 @@
                 <div class="panel-body">
                     <ul>
                         <% for (var i = 0; i < relatives.length; i++) { %>
-                            <li><a href="/detail/id/<%= relatives[i].id %>">v<%= relatives[i].version %> / <%= formatDate(relatives[i].create_time) %></a>，贡献者：<%- getContributor(relatives[i]) %></li>
+                            <li><a href="/detail/id/<%= relatives[i].id %>"><%= getVersion(relatives[i]) %></a>，贡献者：<%- getContributor(relatives[i]) %></li>
                         <% } %>
                     </ul>
                 </div>
@@ -59,17 +59,11 @@
 <script src="/resource/lib/qrcode/jquery.qrcode.min.js"></script>
 <script>
 $(function() {
-    var $alert = $('.alert-info');
-    if ($alert.length > 0) {
-        setTimeout(function() {
-            $alert.alert('close');
-        }, 3e3);
-    }
-
+    var location = window.location;
     $('.qrcode .panel-body').qrcode({
         width: 224,
         height: 224,
-        text: window.location.href
+        text: location.origin + location.pathname
     });
 });
 </script>

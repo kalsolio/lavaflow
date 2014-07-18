@@ -1,25 +1,71 @@
 body {
     font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, STHeiTi, sans-serif;
-    margin: 70px 0 30px;
+    margin-top: 80px;
 }
 
 @font-face {
-    font-family: 'Glyphicons Halflings';
+    font-family: "Glyphicons Halflings";
+    src: url("/resource/font/glyphicons-halflings-regular.eot");
+    src: url("/resource/font/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"),
+         url("/resource/font/glyphicons-halflings-regular.woff") format("woff"),
+         url("/resource/font/glyphicons-halflings-regular.ttf") format("truetype"),
+         url("/resource/font/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "UniSansHeavyItalicItalic";
+    src: url("/resource/font/Uni_Sans_HeavyItalic-webfont.eot");
+    src: url("/resource/font/Uni_Sans_HeavyItalic-webfont.eot?#iefix") format("embedded-opentype"),
+         url("/resource/font/Uni_Sans_HeavyItalic-webfont.woff") format("woff"),
+         url("/resource/font/Uni_Sans_HeavyItalic-webfont.ttf") format("truetype"),
+         url("/resource/font/Uni_Sans_HeavyItalic-webfont.svg#UniSansHeavyItalicItalic") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'FontAwesome';
+    src: url('/resource/font/fontawesome-webfont.eot?v=4.1.0');
+    src: url('/resource/font/fontawesome-webfont.eot?#iefix&v=4.1.0') format('embedded-opentype'),
+         url('/resource/font/fontawesome-webfont.woff?v=4.1.0') format('woff'),
+         url('/resource/font/fontawesome-webfont.ttf?v=4.1.0') format('truetype'),
+         url('/resource/font/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
 
-    src: url('/resource/font/glyphicons-halflings-regular.eot');
-    src: url('/resource/font/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/resource/font/glyphicons-halflings-regular.woff') format('woff'), url('/resource/font/glyphicons-halflings-regular.ttf') format('truetype'), url('/resource/font/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+.footer {
+    margin-top: 20px;
+    background-color: #ecf0f1;
+}
+.footer .text-muted {
+    margin: 20px 0;
+}
+
+.glyphicon-github {
+    font-family: "FontAwesome";
+    font-size: 18px;
+}
+.glyphicon-github:before {
+    content: "\f09b";
 }
 
 .lf-index-jumbotron {
     margin-top: -20px;
     text-align: center;
 }
+.lf-index-jumbotron h1,
+.navbar .navbar-brand {
+    font-family: "UniSansHeavyItalicItalic", Impact, "Helvetica Neue", Helvetica, Microsoft Yahei, STHeiTi, sans-serif;
+}
+.lf-index-jumbotron .container {
+    padding: 0;
+}
 .lf-index-jumbotron .form-group {
     display: inline-block;
     width: 480px;
 }
 .lf-index-jumbotron .btn {
-    height: 46px;
     vertical-align: top;
 }
 .lf-index-jumbotron .alert {
@@ -53,18 +99,99 @@ body {
     padding-left: 15px;
 }
 
-.lf-info {
-    line-height: 10px;
-    vertical-align: bottom;
-}
-.lf-info span, .lf-info a {
-    vertical-align: middle;
-}
 .lf-info .glyphicon-tags {
+    display: inline-block;
     margin-right: 5px;
+    vertical-align: -1px;
+    font-size: 14px;
+}
+.lf-info a {
+    display: inline-block;
+    vertical-align: 2px;
+}
+.lf-info .label {
+    display: block;
+    padding: .2em .6em .3em;
+}
+
+.lf-list .lf-info {
+    margin-bottom: 2px;
 }
 
 .lf-loading {
     margin: 30px;
     text-align: center;
+}
+
+.lf-panel {
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.lf-panel > .panel-heading {
+    background-color: transparent;
+    border-bottom: 2px solid #2c3e50;
+}
+.lf-panel > .panel-body ul {
+    padding-left: 15px;
+}
+
+.lf-tags a {
+    font-size: 28px;
+}
+.lf-tags a:hover,
+.lf-info a:hover {
+    text-decoration: none;
+    -webkit-animation: tada .8s;
+    animation: tada .8s;
+}
+
+@-webkit-keyframes tada {
+    0% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+    }
+    10%, 20% {
+        -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+        transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+    }
+    30%, 50%, 70%, 90% {
+        -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+        transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+    }
+    40%, 60%, 80% {
+        -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+        transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+    }
+    100% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+    }
+}
+@keyframes tada {
+    0% {
+        -webkit-transform: scale3d(1, 1, 1);
+        -ms-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+    }
+    10%, 20% {
+        -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+        -ms-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+        transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+    }
+    30%, 50%, 70%, 90% {
+        -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+        -ms-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+        transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+    }
+    40%, 60%, 80% {
+        -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+        -ms-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+        transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+    }
+    100% {
+        -webkit-transform: scale3d(1, 1, 1);
+        -ms-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+    }
 }
