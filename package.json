@@ -1,7 +1,17 @@
 {
     "name": "lavaflow",
-    "description": "Lavaflow",
+    "description": "Lavaflow是一个文章收录系统，基于ThinkJS。",
     "version": "0.0.1",
+    "homepage": "http://lavaflow.75team.com",
+    "author": {
+        "name": "Max Zhang",
+        "email": "zhangdaiping@gmail.com",
+        "url": "https://github.com/maxzhang"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/maxzhang/lavaflow.git"
+    },
     "dependencies": {
         "cheerio": "^0.17.0",
         "marked": "^0.3.2",

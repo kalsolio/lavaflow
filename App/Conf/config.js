@@ -1,6 +1,6 @@
 module.exports = {
     //配置项: 配置值
-    port: 8360, //监听的端口
+    port: 8469, //监听的端口
     app_group_list: ['Home', 'Admin'], //分组列表
 
     db_type: 'mysql', // 数据库类型
