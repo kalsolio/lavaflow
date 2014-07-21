@@ -102,7 +102,11 @@ module.exports = Controller(function() {
                     if (data.length > 0) {
                         attrs.lastVersionUrl = 'http://' + self.http.host + '/detail/' + data[0].last_version_aid;
                         return D('Article').where({ id: data[0].last_version_aid }).select().then(function(data) {
-                            attrs.tag = data[0].tag;
+                            if (data.length > 0) {
+                                attrs.tag = data[0].tag;
+                            } else {
+                                attrs.lastVersionUrl = '';
+                            }
                             return self.capturePage(url, attrs);
                         });
                     } else {
@@ -126,7 +130,7 @@ module.exports = Controller(function() {
                 var selector = self.get('selector');
                 var selectors = [
                     '.tab-content .comment-content .comment-body', // Github issue
-                    '#content .content_text .content_banner', // www.alloyteam.com
+                    '#content .content_text .content_banner > .text', // www.alloyteam.com
                     '#content .content-bd .post-bd', // ued.taobao.com
                     '#content article .entry', // www.aliued.cn
                     '#content .entry-content', // www.ruanyifeng.com
