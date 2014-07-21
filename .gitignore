@@ -12,4 +12,4 @@
 bower_components/
 node_modules/
 
-App/Runtime/Data/app.pid
+App/Runtime/

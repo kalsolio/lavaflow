@@ -13,7 +13,8 @@
                 <header>
                     <h1><%= article.title %></h1>
                     <p class="source">原文地址：<a href="<%= article.url %>" target="_blank"><%= article.url %></a></p>
-                    <p>贡献者：<%- getContributor(article) %>， 当前版本：<strong><%= getVersion(article) %></strong></p>
+                    <p>贡献者：<%- getContributor(article) %>， 当前版本：<strong><%= getVersion(article) %></strong>，
+                        <a href="/capture?url=<%= encodeURIComponent(article.url) %>">内容有误，我要纠错</a></p>
                     <p class="lf-info"><span class="glyphicon glyphicon-tags"></span>
                         <% for (var i = 0, tags = article.tag.split(','); i < tags.length; i++) { %>
                             <% if (tags[i]) { %>
@@ -37,7 +38,7 @@
                 <div class="panel-body">
                     <ul>
                         <% for (var i = 0; i < relatives.length; i++) { %>
-                            <li><a href="/detail/id/<%= relatives[i].id %>"><%= getVersion(relatives[i]) %></a>，贡献者：<%- getContributor(relatives[i]) %></li>
+                            <li><a href="/detail/<%= relatives[i].id %>"><%= getVersion(relatives[i]) %></a>，贡献者：<%- getContributor(relatives[i]) %></li>
                         <% } %>
                     </ul>
                 </div>
@@ -47,7 +48,7 @@
                 <div class="panel-body">
                     <ul>
                         <% for (var i = 0; i < latest.length; i++) { %>
-                            <li><a href="/detail/id/<%= latest[i].id %>"><%= latest[i].title %></a>，贡献者：<%- getContributor(latest[i]) %></li>
+                            <li><a href="/detail/<%= latest[i].id %>"><%= latest[i].title %></a>，贡献者：<%- getContributor(latest[i]) %></li>
                         <% } %>
                     </ul>
                 </div>
@@ -67,4 +68,5 @@ $(function() {
     });
 });
 </script>
+
 <% include inc/footer.html %>

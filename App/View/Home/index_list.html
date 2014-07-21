@@ -8,7 +8,7 @@
             <% for (var i = 0; i < articles.length; i++) { %>
                 <div class="media">
                     <div class="media-body">
-                        <h4 class="media-heading"><a href="/detail/id/<%= articles[i].id %>"><%= articles[i].title %></a></h4>
+                        <h4 class="media-heading"><a href="/detail/<%= articles[i].id %>"><%= articles[i].title %></a></h4>
                         <p class="lf-info"><span class="glyphicon glyphicon-tags"></span>
                             <% for (var j = 0, tags = articles[i].tag.split(","); j < tags.length; j++) { %>
                                 <% if (tags[j]) { %>

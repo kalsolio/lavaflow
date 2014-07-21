@@ -1,5 +1,5 @@
 body {
-    font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, STHeiTi, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, "Microsoft Yahei", STHeiTi, sans-serif;
     margin-top: 80px;
 }
 
@@ -23,16 +23,6 @@ body {
     font-weight: normal;
     font-style: normal;
 }
-@font-face {
-    font-family: 'FontAwesome';
-    src: url('/resource/font/fontawesome-webfont.eot?v=4.1.0');
-    src: url('/resource/font/fontawesome-webfont.eot?#iefix&v=4.1.0') format('embedded-opentype'),
-         url('/resource/font/fontawesome-webfont.woff?v=4.1.0') format('woff'),
-         url('/resource/font/fontawesome-webfont.ttf?v=4.1.0') format('truetype'),
-         url('/resource/font/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
 
 .footer {
     margin-top: 20px;
@@ -43,11 +33,12 @@ body {
 }
 
 .glyphicon-github {
-    font-family: "FontAwesome";
-    font-size: 18px;
-}
-.glyphicon-github:before {
-    content: "\f09b";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("/resource/img/github-logo.png") no-repeat;
+    -webkit-background-size: 16px 16px;
+    background-size: 16px 16px;
 }
 
 .lf-index-jumbotron {
@@ -70,7 +61,8 @@ body {
 }
 .lf-index-jumbotron .alert {
     display: inline-block;
-    width: 553px;
+    margin-bottom: 11px;
+    width: 579px;
 }
 
 #markdownEditor {

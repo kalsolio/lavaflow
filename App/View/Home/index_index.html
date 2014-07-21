@@ -1,4 +1,5 @@
 <% include inc/header.html %>
+
 <div class="jumbotron lf-index-jumbotron">
     <div class="container">
         <h1>Lavaflow</h1>
@@ -32,7 +33,7 @@
                 <div class="panel-body">
                     <ul>
                         <% for (var i = 0; i < latest.length; i++) { %>
-                            <li><a href="/detail/id/<%= latest[i].id %>"><%= latest[i].title %></a>，贡献者：<%- getContributor(latest[i]) %></li>
+                            <li><a href="/detail/<%= latest[i].id %>"><%= latest[i].title %></a>，贡献者：<%- getContributor(latest[i]) %></li>
                         <% } %>
                     </ul>
                 </div>
@@ -40,4 +41,5 @@
         </div>
     </div>
 </div>
+
 <% include inc/footer.html %>

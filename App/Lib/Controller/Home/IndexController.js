@@ -238,7 +238,7 @@ module.exports = Controller(function() {
 
         listAction: function() {
             var self = this;
-            return D('Article').getArticles(self.get('page'), self.pageSize, self.get('keyword'), self.get('tag')).then(function(articles) {
+            return D('Article').queryArticles(self.get('page'), self.pageSize, self.get('keyword'), self.get('tag')).then(function(articles) {
                 self.assign('articles', articles);
                 self.assign('size', self.pageSize);
                 return self.display();
@@ -247,7 +247,7 @@ module.exports = Controller(function() {
 
         pagingAction: function() {
             var self = this;
-            return D('Article').getArticles(self.get('page'), self.pageSize, self.get('keyword'), self.get('tag')).then(function(articles) {
+            return D('Article').queryArticles(self.get('page'), self.pageSize, self.get('keyword'), self.get('tag')).then(function(articles) {
                 return self.success(articles);
             });
         },

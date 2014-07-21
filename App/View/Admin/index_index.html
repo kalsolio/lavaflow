@@ -1,7 +1,126 @@
-<% include inc/header.html %>
-
-<div class="container">
-
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lavaflow</title>
+<link rel="stylesheet" href="http://libs.useso.com/js/bootstrap/3.2.0/css/bootstrap.min.css">
+<style>
+.lf-admin {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+</style>
+</head>
+<body>
+<div class="container lf-admin">
+    <form class="form-inline" role="form" action="/admin" method="GET">
+        <div class="form-group">
+            <input type="text" name="key" class="form-control" placeholder="keyword" value="<%= http.get.key || '' %>">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>标题</th>
+                <th>版本</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% articles.forEach(function(article) { %>
+                <tr>
+                    <td><%= article.id %></td>
+                    <td><a href="/detail/<%= article.id %>" target="_blank"><%= article.title %></a></td>
+                    <td>v<%= article.version %></td>
+                    <td><%= formatDate(article.create_time) %></td>
+                    <td><a href="#" class="lf-admin-del" data-id="<%= article.id %>">删除</a></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <ul class="pagination">
+        <% if (last < 11) { %>
+            <% if (page == 1) { %>
+                <li class="disabled"><a href="#">&laquo;</a></li>
+            <% } else { %>
+                <li><a href="/admin?page=<%= page - 1 %>&key=<%= key %>">&laquo;</a></li>
+            <% } %>
+            <% for (var i = 1; i < last + 1; i++) { %>
+                <% if (page == i) { %>
+                    <li class="active"><a href="#"><%= i %> <span class="sr-only">(current)</span></a></li>
+                <% } else { %>
+                    <li><a href="/admin?page=<%= i %>&key=<%= key %>"><%= i %></a></li>
+                <% } %>
+            <% } %>
+            <% if (page == last) { %>
+                <li class="disabled"><a href="#">&raquo;</a></li>
+            <% } else { %>
+                <li><a href="/admin?page=<%= page + 1 %>&key=<%= key %>">&raquo;</a></li>
+            <% } %>
+        <% } else { %>
+            <% var min = page - 3; min = min < 2 ? 2 : min; %>
+            <% var max = page + 3; max = max > last - 1 ? last - 1 : max; %>
+            <% if (page == 1) { %>
+                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+            <% } else { %>
+                <li><a href="/admin?page=1&key=<%= key %>">1</a></li>
+                <% if (min > 2) { %>
+                    <li class="disabled"><a href="#">...</a></li>
+                <% } %>
+            <% } %>
+            <% for (var i = min; i < max + 1; i++) { %>
+                <% if (page == i) { %>
+                    <li class="active"><a href="#"><%= i %> <span class="sr-only">(current)</span></a></li>
+                <% } else { %>
+                    <li><a href="/admin?page=<%= i %>&key=<%= key %>"><%= i %></a></li>
+                <% } %>
+            <% } %>
+            <% if (page == last) { %>
+                <li class="active"><a href="#"><%= last %> <span class="sr-only">(current)</span></a></li>
+            <% } else { %>
+                <% if (max < last - 1) { %>
+                    <li class="disabled"><a href="#">...</a></li>
+                <% } %>
+                <li><a href="/admin?page=<%= last %>&key=<%= key %>"><%= last %></a></li>
+            <% } %>
+        <% } %>
+    </ul>
 </div>
 
-<% include inc/footer.html %>
+<script src="http://libs.useso.com/js/jquery/2.1.1-rc2/jquery.min.js"></script>
+<script>
+(function(window) {
+    $('.table').on('click', '.lf-admin-del', function(e) {
+        e.preventDefault();
+        var $a = $(e.currentTarget);
+        if ($a.attr('data-deleting') != 1) {
+            if (window.confirm('确认删除？')) {
+                $a.attr('data-deleting', 1);
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/index/del',
+                    data: {
+                        id: $a.attr('data-id')
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.errno === 0) {
+                            window.location.reload();
+                        }
+                    },
+                    complete: function() {
+                        $a.attr('data-deleting', 0);
+                    }
+                });
+            }
+        }
+    });
+}(window));
+</script>
+</body>
+</html>

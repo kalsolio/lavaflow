@@ -28,16 +28,16 @@ module.exports = Model(function() {
             });
         },
 
-        getArticles: function(page, size, keyword, tag) {
-            page = page || 1;
+        queryArticles: function(page, size, keyword, tag) {
+            page = (isNumber(page) ? page : 1) || 1;
             size = size || 20;
 
             var sql = [];
             sql.push('SELECT * FROM (SELECT * FROM __ARTICLE__ ORDER BY version DESC) a');
             if (keyword) {
-                sql.push(' WHERE title LIKE \'%', keyword, '%\'');
+                sql.push(' WHERE title LIKE \'%', escapeSQL(keyword), '%\'');
             } else if (tag) {
-                sql.push(' WHERE tag LIKE \'%', tag, '%\'');
+                sql.push(' WHERE tag LIKE \'%', escapeSQL(tag), '%\'');
             }
             sql.push(' GROUP BY url_id ORDER BY create_time DESC');
             sql.push(' LIMIT ', (page - 1) * size, ',', page * size);

@@ -13,12 +13,13 @@
         "url": "https://github.com/maxzhang/lavaflow.git"
     },
     "dependencies": {
+        "MD5": "^1.2.1",
         "cheerio": "^0.17.0",
         "marked": "^0.3.2",
         "moment": "^2.7.0",
         "request": "^2.37.0",
-        "thinkjs": "^0.6.11",
-        "to-markdown": "0.0.1",
+        "thinkjs": "^0.6.14",
+        "to-markdown": "^0.0.2",
         "validator": "^3.16.1"
     }
 }
