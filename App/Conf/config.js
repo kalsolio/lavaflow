@@ -30,6 +30,8 @@ module.exports = {
     cache_file_suffix: '.json', // File缓存方式下文件后缀名
     cache_gc_hour: [4], // 缓存清除的时间点，数据为小时
 
+    load_ext_config: ['admin'],
+
     error_tpl_path: VIEW_PATH + '/error.html' // 错误页模版
 
 };
