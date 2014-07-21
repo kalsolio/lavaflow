@@ -54,15 +54,15 @@ body {
 }
 .lf-index-jumbotron .form-group {
     display: inline-block;
-    width: 480px;
+    width: 580px;
 }
 .lf-index-jumbotron .btn {
     vertical-align: top;
 }
 .lf-index-jumbotron .alert {
-    display: inline-block;
-    margin-bottom: 11px;
-    width: 579px;
+    display: block;
+    margin: 0 auto 11px;
+    width: 679px;
 }
 
 #markdownEditor {

@@ -16,6 +16,18 @@ global.escapeHTML = function(str) {
     return str.replace(escapeRe, escapeFn);
 };
 
+global.escapeHTML1 = function(str) {
+    return str.replace(escapeRe, function(s) {
+        return {
+            "<": "&#60;",
+            ">": ">",
+            '"': "&#34;",
+            "'": "&#39;",
+            "&": "&#38;"
+        }[s];
+    });
+};
+
 global.escapeSQL = function(str) {
     return str.replace(/[\0\n\r\b\t\\\'\"\x1a]/g, function(s) {
         switch(s) {

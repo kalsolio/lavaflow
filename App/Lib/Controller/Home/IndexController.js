@@ -100,7 +100,7 @@ module.exports = Controller(function() {
 
                     // 如果文章已收录，那么将URL 提示到页面上
                     if (data.length > 0) {
-                        attrs.lastVersionUrl = 'http://' + self.http.host + '/detail/id/' + data[0].last_version_aid;
+                        attrs.lastVersionUrl = 'http://' + self.http.host + '/detail/' + data[0].last_version_aid;
                         return D('Article').where({ id: data[0].last_version_aid }).select().then(function(data) {
                             attrs.tag = data[0].tag;
                             return self.capturePage(url, attrs);
@@ -162,6 +162,9 @@ module.exports = Controller(function() {
                 });
                 content = content ? toMarkdown(content) : '';
 
+                // toMarkdown 组件现在解析<code> 标签不正确，需要重新转义一次
+                content = content.replace(/`/g, '```');
+
                 attrs.url = url;
                 attrs.title = title;
                 attrs.content = content;
@@ -221,7 +224,7 @@ module.exports = Controller(function() {
                             D('Article').getArticlesByUrlId(article[0].url_id),
                             D('Article').getLatest()
                         ]).then(function(data) {
-                            article[0].content = marked(escapeHTML(article[0].content));
+                            article[0].content = marked(escapeHTML1(article[0].content));
                             self.assign('article', article[0]);
                             self.assign('relatives', data[0]);
                             self.assign('latest', data[1]);
@@ -257,7 +260,7 @@ module.exports = Controller(function() {
         },
 
         redirectDetail: function(msg, id) {
-            return this.redirect('/detail/id/' + id + '?msg=' + encodeURIComponent(msg));
+            return this.redirect('/detail/' + id + '?msg=' + encodeURIComponent(msg));
         }
     };
 });
