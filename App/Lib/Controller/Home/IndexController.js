@@ -139,10 +139,12 @@ module.exports = Controller(function() {
                     '#content .entrybody', // www.cssforest.org
                     '.page .pattern-bg-lighter section:nth-child(2)', // www.html5rocks.com
                     '.content .article', // www.36kr.com
+                    'article .article', // www.welefen.com
                     'article .content',
                     '.content',
                     '.content-bd',
                     '#content',
+                    '.entry',
                     'article .post',
                     'article .post-bd',
                     'article',

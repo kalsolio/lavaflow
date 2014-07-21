@@ -28,6 +28,8 @@ module.exports = {
     cache_path: CACHE_PATH + '/cache', // 缓存路径设置 (File缓存方式有效)
     cache_timeout: 2 * 3600, // 数据缓存有效期，单位: 秒
     cache_file_suffix: '.json', // File缓存方式下文件后缀名
-    cache_gc_hour: [4] // 缓存清除的时间点，数据为小时
+    cache_gc_hour: [4], // 缓存清除的时间点，数据为小时
+
+    error_tpl_path: VIEW_PATH + '/error.html' // 错误页模版
 
 };
