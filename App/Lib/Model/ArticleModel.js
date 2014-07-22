@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = Model(function() {
-    var timeout = 600;
+    var timeout = 60;
 
     return {
         getArticle: function(id) {

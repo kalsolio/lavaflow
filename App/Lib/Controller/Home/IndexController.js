@@ -7,6 +7,8 @@ module.exports = Controller(function() {
     var toMarkdown = require('to-markdown').toMarkdown;
     var validator = require('validator');
 
+    var tagTimeout = 300; // 单位s
+
     function getPage(url) {
         var deferred = getDefer();
         request(url, function(error, response, body) {
@@ -52,7 +54,7 @@ module.exports = Controller(function() {
 
         getTags: function() {
             return S('tags').then(function(tagCache) {
-                if (!tagCache || (tagCache.lastModified + 3600 * 1000) < Date.now()) {
+                if (!tagCache || (tagCache.lastModified + tagTimeout * 1000) < Date.now()) {
                     return D('Article').getTags().then(function(data) {
                         var tags = {};
                         data.forEach(function(o) {
