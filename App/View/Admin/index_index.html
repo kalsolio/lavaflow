@@ -111,6 +111,8 @@
                     success: function(data) {
                         if (data.errno === 0) {
                             window.location.reload();
+                        } else {
+                            window.alert(data.errmsg);
                         }
                     },
                     complete: function() {

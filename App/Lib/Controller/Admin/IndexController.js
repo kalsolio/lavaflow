@@ -46,11 +46,12 @@ module.exports = Controller(function() {
             var key = self.get('key');
             var page = parseInt(self.get('page'), 10) || 1;
             var size = 50;
-            return D('Article').where({ title: ['like', '%' + key + '%'] }).count('id').then(function(count) {
+            var articleModel = D('Article');
+            return articleModel.where({ 'title': ['like', '%' + key + '%'] }).count('id').then(function(count) {
                 var last = count < size ? 1 : (count % size === 0 ? count / size : Math.ceil(count / size));
                 page = page > last ? last : page;
-                return D('Article')
-                    .where({ title: ['like', '%' + key + '%'] })
+                return articleModel
+                    .where({ 'title': ['like', '%' + key + '%'] })
                     .order('create_time DESC')
                     .page(page, size)
                     .select().then(function(data) {
@@ -66,8 +67,29 @@ module.exports = Controller(function() {
 
         delAction: function() {
             var self = this;
-            return D('Article').where({ id: self.post('id') }).delete().then(function() {
-                return self.success();
+            var id = self.post('id');
+            var articleModel = D('Article');
+            return articleModel.where({ 'id': id }).select().then(function(data) {
+                if (data.length > 0) {
+                    var urlId = data[0].url_id;
+                    return articleModel.delArticle(id).then(function() {
+                        return articleModel.query('SELECT `id`,max(`version`) as `max_version` FROM __ARTICLE__ where `url_id`=' + urlId).then(function(data) {
+                            var lastVersion, lastAid;
+                            if (data.length > 0) {
+                                lastVersion = data[0].max_version;
+                                lastAid = data[0].id;
+                            } else {
+                                lastVersion = '';
+                                lastAid = '';
+                            }
+                            return D('Url').updateUrl(urlId, lastVersion, lastAid).then(function() {
+                                return self.success();
+                            });
+                        });
+                    });
+                } else {
+                    return self.error('删除文章失败');
+                }
             });
         }
     };

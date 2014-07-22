@@ -5,7 +5,7 @@ module.exports = Model(function() {
 
     return {
         getArticle: function(id) {
-            return this.where({ id: id })
+            return this.where({ 'id': id })
                 .cache(timeout)
                 .select()
                 .then(function(data) {
@@ -19,10 +19,7 @@ module.exports = Model(function() {
         addArticle: function(data) {
             var urlModel = D('Url');
             return this.add(data).then(function(aid) {
-                return urlModel.where({ id: data.url_id }).update({
-                    last_version: data.version,
-                    last_version_aid: aid
-                }).then(function() {
+                return urlModel.updateUrl(data.url_id, data.version, aid).then(function() {
                     return aid;
                 });
             });
@@ -33,13 +30,13 @@ module.exports = Model(function() {
             size = size || 20;
 
             var sql = [];
-            sql.push('SELECT * FROM (SELECT * FROM __ARTICLE__ ORDER BY version DESC) a');
+            sql.push('SELECT * FROM (SELECT * FROM __ARTICLE__ ORDER BY `version` DESC) a');
             if (keyword) {
-                sql.push(' WHERE title LIKE \'%', escapeSQL(keyword), '%\'');
+                sql.push(' WHERE `title` LIKE \'%', escapeSQL(keyword), '%\'');
             } else if (tag) {
-                sql.push(' WHERE tag LIKE \'%', escapeSQL(tag), '%\'');
+                sql.push(' WHERE `tag` LIKE \'%', escapeSQL(tag), '%\'');
             }
-            sql.push(' GROUP BY url_id ORDER BY create_time DESC');
+            sql.push(' GROUP BY `url_id` ORDER BY `create_time` DESC');
             sql.push(' LIMIT ', (page - 1) * size, ',', page * size);
 
             return this.cache(timeout)
@@ -53,7 +50,7 @@ module.exports = Model(function() {
         },
 
         getArticlesByUrlId: function(urlId) {
-            return this.where({ url_id: urlId }).order('version DESC')
+            return this.where({ 'url_id': urlId }).order('version DESC')
                 .cache(timeout)
                 .select().then(function(relatives) {
                     return relatives;
@@ -62,7 +59,7 @@ module.exports = Model(function() {
 
         getLatest: function() {
             return this.cache(timeout)
-                .query('SELECT * FROM (SELECT * FROM __ARTICLE__ ORDER BY version DESC) a GROUP BY url_id ORDER BY create_time DESC LIMIT 0,10')
+                .query('SELECT * FROM (SELECT * FROM __ARTICLE__ ORDER BY `version` DESC) a GROUP BY `url_id` ORDER BY `create_time` DESC LIMIT 0,10')
                 .then(function(latest) {
                     return latest;
                 });
@@ -70,10 +67,16 @@ module.exports = Model(function() {
 
         getTags: function() {
             return this.cache(timeout)
-                .query('SELECT tag,count(tag) as count FROM __ARTICLE__ GROUP BY tag')
+                .query('SELECT `tag`,count(`tag`) as `count` FROM __ARTICLE__ GROUP BY `tag`')
                 .then(function(data) {
                     return data;
                 });
+        },
+
+        delArticle: function(id) {
+            return this.where({ 'id': id }).delete().then(function(affectedRows) {
+                return affectedRows;
+            });
         }
     };
 });

@@ -98,14 +98,14 @@ module.exports = Controller(function() {
             } else if (!validator.isURL(url)) {
                 return self.redirectIndex('请输入一个合法的URL');
             } else {
-                return D('Url').where({ url: url }).select().then(function(data) {
+                return D('Url').where({ 'url': url }).select().then(function(data) {
                     var attrs = {};
 
                     // 如果文章已收录，那么将URL 提示到页面上
                     if (data.length > 0) {
-                        return D('Article').where({ id: data[0].last_version_aid }).select().then(function(data) {
+                        return D('Article').where({ 'id': data[0].last_version_aid }).select().then(function(data) {
                             if (data.length > 0) {
-                                attrs.lastVersionUrl = C('lf_host') + '/detail/' + data[0].last_version_aid;
+                                attrs.lastVersionUrl = C('lf_host') + '/detail/' + data[0].id;
                                 attrs.tag = data[0].tag;
                             }
                             return self.capturePage(url, attrs);
@@ -204,7 +204,7 @@ module.exports = Controller(function() {
             if (!url || !articleData.title || !articleData.tag || !articleData.content) {
                 return self.redirectIndex('不合法的请求参数，标题、标签、内容不能为空！');
             }
-            return urlModel.where({ url: url }).select().then(function(data) {
+            return urlModel.where({ 'url': url }).select().then(function(data) {
                 if (data.length > 0) {
                     articleData.url_id = data[0].id;
                     articleData.version = (data[0].last_version + 1);
@@ -213,7 +213,7 @@ module.exports = Controller(function() {
                     });
                 } else {
                     return urlModel.add({
-                        url: url
+                        'url': url
                     }).then(function(uid) {
                         articleData.url_id = uid;
                         articleData.version = 1;
@@ -233,11 +233,12 @@ module.exports = Controller(function() {
             if (!id) {
                 self.redirectIndex();
             } else {
-                return D('Article').getArticle(id).then(function(article) {
+                var articleModel = D('Article');
+                return articleModel.getArticle(id).then(function(article) {
                     if (article.length > 0) {
                         return Promise.all([
-                            D('Article').getArticlesByUrlId(article[0].url_id),
-                            D('Article').getLatest()
+                            articleModel.getArticlesByUrlId(article[0].url_id),
+                            articleModel.getLatest()
                         ]).then(function(data) {
                             article[0].content = marked(escapeHTML1(article[0].content));
                             self.assign('article', article[0]);
