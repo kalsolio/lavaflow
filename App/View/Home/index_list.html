@@ -5,22 +5,23 @@
         <p class="lead text-center">没有找到任何你想要的数据</p>
     <% } else { %>
         <div class="lf-list">
-            <% for (var i = 0; i < articles.length; i++) { %>
+            <% articles.forEach(function(article) { %>
                 <div class="media">
                     <div class="media-body">
-                        <h4 class="media-heading"><a href="/detail/<%= articles[i].id %>"><%= articles[i].title %></a></h4>
+                        <h4 class="media-heading"><a href="/detail/<%= article.id %>"><%= article.title %></a></h4>
                         <p class="lf-info"><span class="glyphicon glyphicon-tags"></span>
-                            <% for (var j = 0, tags = articles[i].tag.split(","); j < tags.length; j++) { %>
-                                <% if (tags[j]) { %>
-                                    <a href="/list?tag=<%= encodeURIComponent(tags[j]) %>"><span class="label label-default"><%= tags[j] %></span></a>
+                            <% article.tag.split(",").forEach(function(tag) { %>
+                                <% tag = tag.trim(); %>
+                                <% if (tag) { %>
+                                    <a href="/list?tag=<%= encodeURIComponent(tag) %>"><span class="label label-default"><%= tag %></span></a>
                                 <% } %>
-                            <% } %> /
-                            版本：<%= getVersion(articles[i]) %>
+                            <% }); %> /
+                            版本：<%= getVersion(article) %>
                         </p>
-                        <%= articles[i].content.substring(0, 300) %>
+                        <%= article.content.substring(0, 300) %>
                     </div>
                 </div>
-            <% } %>
+            <% }); %>
         </div>
         <% if (articles.length >= size) { %>
             <div class="lf-loading">Loading...</div>

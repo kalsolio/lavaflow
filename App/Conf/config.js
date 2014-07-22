@@ -8,7 +8,7 @@ module.exports = {
     db_port: '3306', // 端口
     db_name: 'lavaflow', // 数据库名
     db_user: 'root', // 用户名
-    db_pwd: 'xxxxxx', // 密码
+    db_pwd: 'admin', // 密码
     db_prefix: 'lf_', // 数据库表前缀
 
     //缓存配置
@@ -32,6 +32,8 @@ module.exports = {
 
     load_ext_config: ['admin'],
 
-    error_tpl_path: VIEW_PATH + '/error.html' // 错误页模版
+    error_tpl_path: VIEW_PATH + '/error.html', // 错误页模版
+
+    lf_host: 'http://lavaflow.75team.com'
 
 };

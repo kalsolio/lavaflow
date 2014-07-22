@@ -58,6 +58,7 @@ module.exports = Controller(function() {
                         data.forEach(function(o) {
                             var arr = o.tag.split(',');
                             arr.forEach(function(t) {
+                                t = t.trim();
                                 if (t) {
                                     if (!tags[t]) {
                                         tags[t] = o.count;
@@ -100,12 +101,10 @@ module.exports = Controller(function() {
 
                     // 如果文章已收录，那么将URL 提示到页面上
                     if (data.length > 0) {
-                        attrs.lastVersionUrl = 'http://' + self.http.host + '/detail/' + data[0].last_version_aid;
                         return D('Article').where({ id: data[0].last_version_aid }).select().then(function(data) {
                             if (data.length > 0) {
+                                attrs.lastVersionUrl = C('lf_host') + '/detail/' + data[0].last_version_aid;
                                 attrs.tag = data[0].tag;
-                            } else {
-                                attrs.lastVersionUrl = '';
                             }
                             return self.capturePage(url, attrs);
                         });
@@ -169,7 +168,7 @@ module.exports = Controller(function() {
                 content = content ? toMarkdown(content) : '';
 
                 // toMarkdown 组件现在解析<code> 标签不正确，需要重新转义一次
-                content = content.replace(/`/g, '```');
+                content = content.replace(/`/g, '```\n');
 
                 attrs.url = url;
                 attrs.title = title;
@@ -184,16 +183,24 @@ module.exports = Controller(function() {
             var urlModel = D('Url');
             var articleModel = D('Article');
             var url = self.post('url');
+            var tag = self.post('tag');
+            var tags = [];
+            tag.split(',').forEach(function(t) {
+                t = t.trim();
+                if (t) {
+                    tags.push(t);
+                }
+            });
             var articleData = {
                 title: self.post('title'),
-                tag: self.post('tag'),
+                tag: tags.join(','),
                 contributor: self.post('contributor'),
                 contributor_website: self.post('website'),
                 content: self.post('content'),
                 url: url
             };
             if (!url || !articleData.title || !articleData.tag || !articleData.content) {
-                return self.redirectIndex('不合法的请求参数');
+                return self.redirectIndex('不合法的请求参数，标题、标签、内容不能为空！');
             }
             return urlModel.where({ url: url }).select().then(function(data) {
                 if (data.length > 0) {

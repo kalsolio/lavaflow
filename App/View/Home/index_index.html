@@ -21,8 +21,9 @@
             <div class="panel panel-default lf-panel lf-tags">
                 <div class="panel-heading">标签索引</div>
                 <div class="panel-body">
-                    <% for (var i = 0; i < tags.length; i++) { if (i >= 50) { break; } %>
-                        <a href="/list?tag=<%= encodeURIComponent(tags[i]) %>"><span class="label label-default" style="background-color:<%= getTagColor() %>;"><%= tags[i][0] %></span></a>
+                    <% for (var i = 0; i < tags.length; i++) { %>
+                        <% if (i >= 50) break; %>
+                        <a href="/list?tag=<%= encodeURIComponent(tags[i][0]) %>"><span class="label label-default" style="background-color:<%= getTagColor() %>;"><%= tags[i][0] %></span></a>
                     <% } %>
                 </div>
             </div>
@@ -32,9 +33,9 @@
                 <div class="panel-heading">最新收录</div>
                 <div class="panel-body">
                     <ul>
-                        <% for (var i = 0; i < latest.length; i++) { %>
-                            <li><a href="/detail/<%= latest[i].id %>"><%= latest[i].title %></a>，贡献者：<%- getContributor(latest[i]) %></li>
-                        <% } %>
+                        <% latest.forEach(function(article) { %>
+                            <li><a href="/detail/<%= article.id %>"><%= article.title %></a>，贡献者：<%- getContributor(article) %></li>
+                        <% }); %>
                     </ul>
                 </div>
             </div>
