@@ -13,7 +13,7 @@ module.exports = {
 
     //缓存配置
     db_cache_on: true, // 是否启用查询缓存，如果关闭那么cache方法则无效
-    db_cache_type: 'File', // 缓存类型，默认为内存缓存
+    db_cache_type: '', // 缓存类型，默认为内存缓存
     db_cache_path: CACHE_PATH + '/db', //缓存路径，File类型下有效
     db_cache_timeout: 3600, // 缓存时间，默认为1个小时
 
@@ -30,8 +30,11 @@ module.exports = {
     cache_file_suffix: '.json', // File缓存方式下文件后缀名
     cache_gc_hour: [4], // 缓存清除的时间点，数据为小时
 
-    load_ext_config: ['admin'],
+    log_record: true, // 是否记录日志，开启后会重写console.log等系列方法
+    log_file_path: LOG_PATH, // 日志文件存在路径
+    log_console_type: ['error'], // 默认只接管console.error日志
 
+    load_ext_config: ['admin'],
     error_tpl_path: VIEW_PATH + '/error.html', // 错误页模版
 
     lf_host: 'http://lavaflow.75team.com'
