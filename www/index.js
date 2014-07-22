@@ -3,5 +3,5 @@ global.APP_PATH = __dirname + '/../App';
 //静态资源根目录
 global.RESOURCE_PATH = __dirname;
 global.ROOT_PATH = __dirname;
-global.APP_DEBUG = true;
+global.APP_DEBUG = false;
 require('thinkjs');
