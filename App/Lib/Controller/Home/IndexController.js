@@ -196,7 +196,7 @@ module.exports = Controller(function() {
             var url = self.post('url');
             var tag = self.post('tag');
             var tags = [];
-            tag.split(',').forEach(function(t) {
+            tag.replace(/\uFF0C/g, ',').split(',').forEach(function(t) {
                 t = t.trim();
                 if (t) {
                     tags.push(t);
