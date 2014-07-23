@@ -11,7 +11,12 @@ module.exports = Controller(function() {
 
     function getPage(url) {
         var deferred = getDefer();
-        request(url, function(error, response, body) {
+        request({
+            url: url,
+            headers: {
+                'User-Agent': '"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2091.2 Safari/537.36'
+            }
+        }, function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 deferred.resolve(body);
             } else {
@@ -129,10 +134,12 @@ module.exports = Controller(function() {
                 title = $('title').html();
 
                 var selector = self.get('selector');
-                
+
                 // selectors的顺序不能随意更改，选取器顺序表示探测优先级
                 var selectors = [
                     '.tab-content .comment-content .comment-body', // Github issue
+                    '.page .pattern-bg-lighter section:nth-child(2)', // www.html5rocks.com
+                    '.zh-question-answer-wrapper .zm-editable-content', // 知乎回答
                     '#content .content_text .content_banner > .text', // www.alloyteam.com
                     '#content .content-bd .post-bd', // ued.taobao.com
                     '#content article .entry', // www.aliued.cn
@@ -140,7 +147,7 @@ module.exports = Controller(function() {
                     '#content .entry', // www.zhangxinxu.com
                     '#content .content', // www.coolshell.cn
                     '#content .entrybody', // www.cssforest.org
-                    '.page .pattern-bg-lighter section:nth-child(2)', // www.html5rocks.com
+                    '.entry .entry-content', // 知乎专栏
                     '.content .article', // www.36kr.com
                     'article .article', // www.welefen.com
                     'article .content',
