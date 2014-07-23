@@ -80,7 +80,7 @@ global.getTagColor = function() {
             color = '#007d65';
             break;
         case 3:
-            color = '#005344';
+            color = '#426ab3';
             break;
         case 4:
             color = '#145b7d';
@@ -89,16 +89,16 @@ global.getTagColor = function() {
             color = '#4f5555';
             break;
         case 6:
-            color = '#274d3d';
+            color = '#008792';
             break;
         case 7:
-            color = '#3e4145';
+            color = '#508a88';
             break;
         case 8:
             color = '#525f42';
             break;
         case 9:
-            color = '#274d3d';
+            color = '#78a355';
             break;
     }
     return color;
