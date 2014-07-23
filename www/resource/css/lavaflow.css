@@ -132,12 +132,6 @@ body {
     padding-left: 15px;
 }
 
-.lf-list .media-body,
-.lf-detail-article .content,
-.lf-panel > .panel-body li {
-    word-break: break-all;
-}
-
 .lf-tags a {
     font-size: 28px;
 }
@@ -147,6 +141,18 @@ body {
     -webkit-animation: tada .8s;
     animation: tada .8s;
 }
+
+.lf-list .media-body,
+.lf-detail-article .content,
+.panel > .panel-body li,
+.lf-panel > .panel-body li {
+    word-break: break-all;
+}
+
+.duoshuo {
+    overflow: hidden;
+}
+
 
 @-webkit-keyframes tada {
     0% {
