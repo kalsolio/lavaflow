@@ -129,6 +129,8 @@ module.exports = Controller(function() {
                 title = $('title').html();
 
                 var selector = self.get('selector');
+                
+                // selectors的顺序不能随意更改，选取器顺序表示探测优先级
                 var selectors = [
                     '.tab-content .comment-content .comment-body', // Github issue
                     '#content .content_text .content_banner > .text', // www.alloyteam.com
