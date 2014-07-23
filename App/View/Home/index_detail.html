@@ -84,6 +84,16 @@ $(function() {
         height: 224,
         text: location.origin + location.pathname
     });
+
+    // 解决图片防盗链的问题
+    $('.lf-detail-article .content img').each(function() {
+        var $img = $(this);
+        var url = $img.attr('src');
+        if (/zhimg\.com/.test(url) // 知乎
+            ) {
+                $img.attr('src', '/home/index/showImage?img=' + encodeURIComponent(url));
+            }
+    });
 });
 </script>
 

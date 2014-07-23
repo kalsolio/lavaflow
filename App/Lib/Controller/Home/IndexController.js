@@ -1,11 +1,17 @@
 'use strict';
 
 module.exports = Controller(function() {
+    var url = require('url');
     var request = require('request');
     var cheerio = require('cheerio');
     var marked = require('marked');
     var toMarkdown = require('to-markdown').toMarkdown;
     var validator = require('validator');
+
+    var REQUEST_HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2101.0 Safari/537.36',
+        'Referer': ''
+    };
 
     var tagTimeout = 300; // 单位s
 
@@ -13,9 +19,7 @@ module.exports = Controller(function() {
         var deferred = getDefer();
         request({
             url: url,
-            headers: {
-                'User-Agent': '"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2091.2 Safari/537.36'
-            }
+            headers: REQUEST_HEADERS
         }, function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 deferred.resolve(body);
@@ -278,6 +282,18 @@ module.exports = Controller(function() {
             return D('Article').queryArticles(self.get('page'), self.pageSize, self.get('keyword'), self.get('tag')).then(function(articles) {
                 return self.success(articles);
             });
+        },
+
+        showImageAction: function() {
+            var imgUrl = this.get('img');
+            var urlObj = url.parse(imgUrl);
+            urlObj.protocol = urlObj.protocol || 'http:';
+            var img = request({
+                url: url.format(urlObj),
+                headers: REQUEST_HEADERS
+            });
+            this.http.req.pipe(img);
+            img.pipe(this.http.res);
         },
 
         redirectIndex: function(error, p) {
