@@ -70,6 +70,9 @@ body {
     height: 450px;
 }
 
+.lf-detail-article {
+    margin-bottom: 10px;
+}
 .lf-detail-article .content header {
     margin-bottom: 10px;
     border-bottom: 1px solid #eee;
@@ -90,7 +93,7 @@ body {
     height: 260px;
 }
 .lf-detail-aside ul {
-    padding-left: 15px;
+    padding-left: 20px;
 }
 
 .lf-info .glyphicon-tags {
