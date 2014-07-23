@@ -74,31 +74,31 @@ global.getTagColor = function() {
             color = '#777';
             break;
         case 1:
-            color = '#428bca';
+            color = '#5c7a29';
             break;
         case 2:
-            color = '#5cb85c';
+            color = '#007d65';
             break;
         case 3:
-            color = '#5bc0de';
+            color = '#005344';
             break;
         case 4:
-            color = '#f0ad4e';
+            color = '#145b7d';
             break;
         case 5:
-            color = '#d9534f';
+            color = '#4f5555';
             break;
         case 6:
-            color = '#a3cf62';
+            color = '#274d3d';
             break;
         case 7:
-            color = '#9b95c9';
+            color = '#3e4145';
             break;
         case 8:
-            color = '#ea66a6';
+            color = '#525f42';
             break;
         case 9:
-            color = '#33a3dc';
+            color = '#274d3d';
             break;
     }
     return color;

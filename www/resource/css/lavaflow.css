@@ -70,17 +70,18 @@ body {
     height: 450px;
 }
 
-.lf-detail-article header {
+.lf-detail-article .content header {
     margin-bottom: 10px;
     border-bottom: 1px solid #eee;
 }
-.lf-detail-article footer {
+.lf-detail-article .content  header h1 {
+    margin-top: 0;
+    font-size: 36px;
+}
+.lf-detail-article .content  footer {
     margin-top: 10px;
     padding-top: 10px;
     border-top: 1px solid #eee;
-}
-.lf-detail-article header .source {
-    word-break: break-all;
 }
 .lf-detail-article .content img {
     max-width: 100%;
@@ -129,6 +130,12 @@ body {
 }
 .lf-panel > .panel-body ul {
     padding-left: 15px;
+}
+
+.lf-list .media-body,
+.lf-detail-article .content,
+.lf-panel > .panel-body li {
+    word-break: break-all;
 }
 
 .lf-tags a {
