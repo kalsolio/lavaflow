@@ -253,7 +253,7 @@ module.exports = Controller(function() {
                             articleModel.getArticlesByUrlId(article[0].url_id),
                             articleModel.getLatest()
                         ]).then(function(data) {
-                            article[0].content = marked(escapeHTML1(article[0].content));
+                            article[0].markedContent = marked(escapeHTML1(article[0].content));
                             self.assign('article', article[0]);
                             self.assign('relatives', data[0]);
                             self.assign('latest', data[1]);
