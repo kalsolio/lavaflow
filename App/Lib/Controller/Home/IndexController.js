@@ -133,8 +133,10 @@ module.exports = Controller(function() {
             return getPage(url).then(function(html) {
                 var content, title;
                 var $ = cheerio.load(html, { decodeEntities: false });
+                $('meta').remove();
                 $('script').remove();
                 $('style').remove();
+                $('head').append('<meta charset="utf-8">');
                 title = $('title').html();
 
                 var selector = self.get('selector');
@@ -152,9 +154,12 @@ module.exports = Controller(function() {
                     '#content .content', // www.coolshell.cn
                     '#content .entrybody', // www.cssforest.org
                     '.entry .entry-content', // 知乎专栏
+                    'article .entry-content', // www.imququ.com
                     '.content .article', // www.36kr.com
                     'article .article', // www.welefen.com
+                    '.safe_school_topics_cont', // security.tencent.com
                     'article .content',
+                    '.entry-content',
                     '.content',
                     '.content-bd',
                     '#content',
@@ -178,12 +183,13 @@ module.exports = Controller(function() {
                     if (/^pre/i.test(s2)) {
                         return s1 != '/' ? '<code>' : '</code>';
                     }
-                    return /^(h[1-9]|hr|br|title|b|strong|i|em|dfn|var|city|span|ul|ol|dl|li|blockquote|pre|p|div|img|a)$/i.test(s2) ? s : '';
+                    return /^(h[1-9]|hr|br|title|b|strong|i|em|dfn|var|city|ul|ol|dl|li|blockquote|pre|p|img|a)$/i.test(s2) ? s : '';
                 });
                 content = content ? toMarkdown(content) : '';
 
                 // toMarkdown 组件现在解析<code> 标签不正确，需要重新转义一次
-                content = content.replace(/`/g, '```\n');
+                content = content.replace(/`/g, '\n```\n');
+                content = content.replace(/\n */g, '\n');
 
                 attrs.url = url;
                 attrs.title = title;
