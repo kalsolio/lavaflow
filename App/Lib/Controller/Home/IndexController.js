@@ -190,6 +190,7 @@ module.exports = Controller(function() {
                 // toMarkdown 组件现在解析<code> 标签不正确，需要重新转义一次
                 content = content.replace(/`/g, '\n```\n');
                 content = content.replace(/\n */g, '\n');
+                content = content.replace(/!\[*/g, '\n!\[');
 
                 attrs.url = url;
                 attrs.title = title;
