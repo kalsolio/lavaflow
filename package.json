@@ -20,7 +20,7 @@
         "moment": "^2.8.1",
         "request": "^2.39.0",
         "thinkjs": "^0.6.16",
-        "thinkjs-behavior-ejs": "^0.0.1",
+        "thinkjs-behavior-ejs": "^0.0.2",
         "to-markdown": "^0.0.2",
         "validator": "^3.16.1"
     }
