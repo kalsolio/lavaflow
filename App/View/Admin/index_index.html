@@ -37,7 +37,7 @@
                     <td><%= article.id %></td>
                     <td><a href="/detail/<%= article.id %>" target="_blank"><%= article.title %></a></td>
                     <td>v<%= article.version %></td>
-                    <td><%= formatDate(article.create_time) %></td>
+                    <td><%=: article.create_time | formatDate %></td>
                     <td><a href="#" class="lf-admin-del" data-id="<%= article.id %>">删除</a></td>
                 </tr>
             <% }); %>

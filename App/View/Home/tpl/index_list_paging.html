@@ -1,0 +1,17 @@
+<% articles.forEach(function(article) { %>
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading"><a href="/detail/<%= article.id %>"><%= article.title %></a></h4>
+            <p class="lf-info"><span class="glyphicon glyphicon-tags"></span>
+                <% article.tag.split(",").forEach(function(tag) { %>
+                    <% tag = tag.trim(); %>
+                    <% if (tag) { %>
+                        <a href="/list?tag=<%= encodeURIComponent(tag) %>"><span class="label label-default"><%= tag %></span></a>
+                    <% } %>
+                <% }); %> /
+                版本：<%=: article | getVersion %>
+            </p>
+            <%= article.content.substring(0, 300) %>
+        </div>
+    </div>
+<% }); %>

@@ -37,6 +37,8 @@ module.exports = {
     load_ext_config: ['admin'],
     error_tpl_path: VIEW_PATH + '/error.html', // 错误页模版
 
-    lf_host: 'http://lavaflow.75team.com'
+    lf_host: 'http://lavaflow.75team.com',
+
+    ejs_behavior_actions: ['home/index/list']
 
 };

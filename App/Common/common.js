@@ -1,4 +1,5 @@
 var moment = require('moment');
+var ejs = thinkRequire('ejs');
 
 var escapeMap = {
     "<": "&#60;",
@@ -16,7 +17,7 @@ global.escapeHTML = function(str) {
     return str.replace(escapeRe, escapeFn);
 };
 
-global.escapeHTML1 = function(str) {
+global.escapeHTMLWithoutGT = function(str) {
     return str.replace(escapeRe, function(s) {
         return {
             "<": "&#60;",
@@ -48,24 +49,6 @@ global.escapeSQL = function(str) {
         }
     });
 }
-
-global.formatDate = function(t) {
-    return moment(t).format('YYYY-MM-DD HH:mm');
-};
-
-global.getVersion = function(o) {
-    return 'v' + o.version + '-' + moment(o.create_time).format('YYYYMMDD');
-};
-
-global.getContributor = function(o) {
-    if (o.contributor && o.contributor_website) {
-        return '<a href="' + global.escapeHTML(o.contributor_website) + '" target="_blank">' + global.escapeHTML(o.contributor) + '</a>';
-    } else if (o.contributor && !o.contributor_website) {
-        return global.escapeHTML(o.contributor);
-    } else {
-        return '匿名';
-    }
-};
 
 global.getTagColor = function() {
     var color;
@@ -103,3 +86,25 @@ global.getTagColor = function() {
     }
     return color;
 }
+
+global.getVersion = function(o) {
+    return 'v' + o.version + '-' + moment(o.create_time).format('YYYYMMDD');
+};
+
+
+
+ejs.filters.getVersion = global.getVersion;
+
+ejs.filters.formatDate = function(t) {
+    return moment(t).format('YYYY-MM-DD HH:mm');
+};
+
+ejs.filters.getContributor = function(o) {
+    if (o.contributor && o.contributor_website) {
+        return '<a href="' + global.escapeHTML(o.contributor_website) + '" target="_blank">' + global.escapeHTML(o.contributor) + '</a>';
+    } else if (o.contributor && !o.contributor_website) {
+        return global.escapeHTML(o.contributor);
+    } else {
+        return '匿名';
+    }
+};

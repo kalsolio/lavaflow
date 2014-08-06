@@ -5,23 +5,7 @@
         <p class="lead text-center">没有找到任何你想要的数据</p>
     <% } else { %>
         <div class="lf-list">
-            <% articles.forEach(function(article) { %>
-                <div class="media">
-                    <div class="media-body">
-                        <h4 class="media-heading"><a href="/detail/<%= article.id %>"><%= article.title %></a></h4>
-                        <p class="lf-info"><span class="glyphicon glyphicon-tags"></span>
-                            <% article.tag.split(",").forEach(function(tag) { %>
-                                <% tag = tag.trim(); %>
-                                <% if (tag) { %>
-                                    <a href="/list?tag=<%= encodeURIComponent(tag) %>"><span class="label label-default"><%= tag %></span></a>
-                                <% } %>
-                            <% }); %> /
-                            版本：<%= getVersion(article) %>
-                        </p>
-                        <%= article.content.substring(0, 300) %>
-                    </div>
-                </div>
-            <% }); %>
+            <% include tpl/index_list_paging.html %>
         </div>
         <% if (articles.length >= size) { %>
             <div class="lf-loading">Loading...</div>
@@ -30,17 +14,61 @@
 </div>
 
 <% if (articles.length >= size) { %>
-<script src="/resource/lib/ejs-0.8.6/ejs.min.js"></script>
 <script src="/resource/lib/moment-2.7.0/moment.min.js"></script>
+<script src="/resource/lib/ejs-0.8.6/ejs.min.js"></script>
+<%- _ejs_templates %>
 <script>
-window.CONF = {
-    keyword: '<%= http.get.keyword || '' %>',
-    tag: '<%= http.get.tag || '' %>',
-    page: <%= http.get.page || 1 %>,
-    size: <%= size %>
-};
+(function(window) {
+    var document = window.document;
+    function getScrollY() {
+        return window.pageYOffset || window.scrollY || document.documentElement.scrollTop;
+    }
+
+    var page = '<%= http.get.page || 1 %>';
+    var size = '<%= size %>';
+    var keyword = '<%= http.get.keyword || '' %>';
+    var tag = '<%= http.get.tag || '' %>';
+
+    var $body = $('body');
+    var $loading = $('.lf-loading');
+    var $list = $('.lf-list');
+    var scrollOffset = 200;
+    var loading = false;
+    var isEnd = false;
+
+    var listRender = ejs.compile($('#_ejs_template_paging').html());
+
+    $(window).scroll(function() {
+        var scrollY = getScrollY();
+        if (!isEnd && !loading && scrollY > ($body.height() - window.innerHeight - scrollOffset)) {
+            loading = true;
+            $.ajax({
+                type: 'GET',
+                url: '/paging',
+                dataType: 'json',
+                data: {
+                    keyword: keyword,
+                    tag: tag,
+                    page: page + 1
+                },
+                success: function(data) {
+                    if (data.errno === 0) {
+                        if (data.data.length <= size) {
+                            isEnd = true;
+                            $loading.hide();
+                        }
+                        $list.append(listRender({ articles: data.data }));
+                        page += 1;
+                    }
+                },
+                complete: function() {
+                    loading = false;
+                }
+            });
+        }
+    });
+}(window));
 </script>
-<script src="/resource/js/list.js"></script>
 <% } %>
 
 <% include inc/footer.html %>

@@ -15,10 +15,12 @@
     "dependencies": {
         "MD5": "^1.2.1",
         "cheerio": "^0.17.0",
+        "ejs": "^1.0.0",
         "marked": "^0.3.2",
-        "moment": "^2.7.0",
+        "moment": "^2.8.1",
         "request": "^2.39.0",
         "thinkjs": "^0.6.16",
+        "thinkjs-behavior-ejs": "^0.0.1",
         "to-markdown": "^0.0.2",
         "validator": "^3.16.1"
     }

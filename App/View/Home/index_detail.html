@@ -13,7 +13,7 @@
                 <header>
                     <h1><%= article.title %></h1>
                     <p class="source">原文地址：<a href="<%= article.url %>" target="_blank"><%= article.url %></a></p>
-                    <p>贡献者：<%- getContributor(article) %>， 当前版本：<strong><%= getVersion(article) %></strong>，
+                    <p>贡献者：<%-: article | getContributor %>， 当前版本：<strong><%=: article | getVersion %></strong>，
                         <a href="/capture?url=<%= encodeURIComponent(article.url) %>">内容有误，我要纠错</a></p>
                     <p class="lf-info"><span class="glyphicon glyphicon-tags"></span>
                         <% article.tag.split(',').forEach(function(tag) { %>
@@ -56,7 +56,7 @@
                 <div class="panel-body">
                     <ul>
                         <% relatives.forEach(function(article) { %>
-                            <li><a href="/detail/<%= article.id %>"><%= getVersion(article) %></a>，贡献者：<%- getContributor(article) %></li>
+                            <li><a href="/detail/<%= article.id %>"><%=: article | getVersion %></a>，贡献者：<%-: article | getContributor %></li>
                         <% }); %>
                     </ul>
                 </div>
@@ -66,7 +66,7 @@
                 <div class="panel-body">
                     <ul>
                         <% latest.forEach(function(article) { %>
-                            <li><a href="/detail/<%= article.id %>"><%= article.title %></a>，贡献者：<%- getContributor(article) %></li>
+                            <li><a href="/detail/<%= article.id %>"><%= article.title %></a>，贡献者：<%-: article | getContributor %></li>
                         <% }); %>
                     </ul>
                 </div>

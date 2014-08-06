@@ -63,8 +63,8 @@
     $contributor.val(localStorage.getItem('lavaflow/capture/contributor'));
     $website.val(localStorage.getItem('lavaflow/capture/website'));
 
-    $('form').on('submit', function() {
-        $('form button[type="submit"]').attr('disabled', true).html('提交中...');
+    $('.container form').on('submit', function() {
+        $('.container form button[type="submit"]').attr('disabled', true).html('提交中...');
     });
 }(window));
 </script>

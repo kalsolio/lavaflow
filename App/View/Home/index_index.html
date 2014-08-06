@@ -34,7 +34,7 @@
                 <div class="panel-body">
                     <ul>
                         <% latest.forEach(function(article) { %>
-                            <li><a href="/detail/<%= article.id %>"><%= article.title %></a>，贡献者：<%- getContributor(article) %></li>
+                            <li><a href="/detail/<%= article.id %>"><%= article.title %></a>，贡献者：<%-: article | getContributor %></li>
                         <% }); %>
                     </ul>
                 </div>
