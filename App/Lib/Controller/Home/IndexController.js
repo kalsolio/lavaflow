@@ -159,6 +159,7 @@ module.exports = Controller(function() {
                     'article .entry-content', // www.imququ.com
                     '.content .article', // www.36kr.com
                     'article .article', // www.welefen.com
+                    '.article_content', // blog.csdn.net
                     'article .content',
                     '.entry-content',
                     '.content',
