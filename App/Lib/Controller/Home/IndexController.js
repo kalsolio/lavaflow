@@ -247,8 +247,21 @@ module.exports = Controller(function() {
 
                 // toMarkdown 组件现在解析<code> 标签不正确，需要重新转义一次
                 content = content.replace(/`/g, '\n```\n');
-                content = content.replace(/\n!\[*/g, '\n\n!\[');
-                content = filterContent(content, null, function(str) { return str.replace(/\n */g, '\n'); }).join('');
+
+                // 过滤掉非<code>块的行首空格
+                content = filterContent(content, null, function(str) {
+                    return str.replace(/\n */g, '\n');
+                }).join('');
+
+                // 如果图片外部嵌套了链接，防止链接解析出错导致错误的换行
+                content = content.replace(/\[\n?(!\[[^\]]*\]\([^\)]+\))\n?\](\([^\)]+\))/g, function(s, s1, s2) {
+                    return '\n\n[' + s1 + ']' + s2 + '\n\n';
+                });
+
+                // 为图片引入加上换行，防止图片与文字混成一行
+                content = content.replace(/\n!\[[^\]]*\]\([^\)]+\)/g, function(s) {
+                    return '\n\n' + s + '\n\n';
+                });
 
                 attrs.url = url;
                 attrs.title = title;
