@@ -1,7 +1,7 @@
 {
     "name": "lavaflow",
     "description": "Lavaflow是一个文章收录系统，基于ThinkJS。",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "homepage": "http://lavaflow.75team.com",
     "author": {
         "name": "Max Zhang",
