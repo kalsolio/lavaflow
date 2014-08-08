@@ -88,6 +88,7 @@ body {
 }
 .lf-detail-article .content img {
     max-width: 100%;
+    border: 1px solid #a1a1a1;
 }
 .lf-detail-aside .qrcode .panel-body {
     height: 260px;
