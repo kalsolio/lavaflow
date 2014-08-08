@@ -37,6 +37,34 @@ module.exports = Controller(function() {
         [/welefen\.com/, 'article .article'] // www.welefen.com
     ];
 
+    // selectors的顺序不能随意更改，选取器顺序表示探测优先级
+    var defaultSelectors = [
+        '#content .content-bd .post-bd',
+        '#content article .entry',
+        '#content .entry-content',
+        '#content .entry',
+        '#content .content',
+        '#content .entrybody',
+        '.entry .entry-content',
+        '.content .article',
+        'article .entry-content',
+        'article .article',
+        'article .content',
+        'article .post',
+        'article .post-bd',
+        '.article_content',
+        '.entry-content',
+        '.content',
+        '.content-bd',
+        '#content',
+        '.entry',
+        'article',
+        '.article',
+        '.post',
+        '.post-bd',
+        'body'
+    ];
+
     function getSpecialSelector(url) {
         var hostname = urlMod.parse(url).hostname;
         for (var i = 0, len = specialSelectors.length; i < len; i++) {
@@ -204,34 +232,7 @@ module.exports = Controller(function() {
                 if (selector) {
                     selectors.push(selector);
                 }
-
-                // selectors的顺序不能随意更改，选取器顺序表示探测优先级
-                selectors = selectors.concat([
-                    '#content .content-bd .post-bd',
-                    '#content article .entry',
-                    '#content .entry-content',
-                    '#content .entry',
-                    '#content .content',
-                    '#content .entrybody',
-                    '.entry .entry-content',
-                    '.content .article',
-                    'article .entry-content',
-                    'article .article',
-                    'article .content',
-                    'article .post',
-                    'article .post-bd',
-                    '.article_content',
-                    '.entry-content',
-                    '.content',
-                    '.content-bd',
-                    '#content',
-                    '.entry',
-                    'article',
-                    '.article',
-                    '.post',
-                    '.post-bd',
-                    'body'
-                ]);
+                selectors = selectors.concat(defaultSelectors);
                 content = getContent($, selectors);
 
                 // 过滤掉所有html2markdown不解析的标签
