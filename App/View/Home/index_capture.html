@@ -47,7 +47,7 @@
     editor.setTheme('ace/theme/github');
     session.setMode('ace/mode/markdown');
     session.on('change', function(e) {
-        $content.html(session.getValue());
+        $content.val(session.getValue());
     });
 
     var localStorage = window.localStorage;

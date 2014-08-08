@@ -26,7 +26,7 @@ module.exports = Model(function() {
         },
 
         queryArticles: function(page, size, keyword, tag) {
-            page = (isNumber(page) ? page : 1) || 1;
+            page = parseInt(page, 10) || 1;
             size = size || 20;
 
             var sql = [];

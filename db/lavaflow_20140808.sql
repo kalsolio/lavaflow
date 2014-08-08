@@ -35,8 +35,9 @@ CREATE TABLE `lf_article` (
   `version` int(11) NOT NULL,
   `url_id` int(11) NOT NULL,
   `url` varchar(2048) NOT NULL COMMENT '文章URL，冗余字段',
+  `marked_content` blob,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,7 +53,7 @@ CREATE TABLE `lf_url` (
   `last_version` int(11) DEFAULT NULL COMMENT '最新版本',
   `last_version_aid` int(11) DEFAULT NULL COMMENT '最新版本文章ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -64,4 +65,4 @@ CREATE TABLE `lf_url` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-07-16 16:07:15
+-- Dump completed on 2014-08-08 14:19:43

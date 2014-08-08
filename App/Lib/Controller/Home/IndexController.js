@@ -190,8 +190,8 @@ module.exports = Controller(function() {
 
                 // toMarkdown 组件现在解析<code> 标签不正确，需要重新转义一次
                 content = content.replace(/`/g, '\n```\n');
-                content = content.replace(/\n */g, '\n');
-                content = content.replace(/!\[*/g, '\n!\[');
+                content = content.replace(/\n!\[*/g, '\n\n!\[');
+                content = self.filterContent(content, null, function(str) { return str.replace(/\n */g, '\n'); }).join('');
 
                 attrs.url = url;
                 attrs.title = title;
@@ -226,7 +226,8 @@ module.exports = Controller(function() {
                 return self.redirectIndex('不合法的请求参数，标题、标签、内容不能为空！');
             }
 
-            articleData.content = self.escapeHtml(articleData.content).join('');
+            articleData.content = self.filterContent(articleData.content, null, escapeHTMLWithoutGT).join('');
+            articleData.marked_content = marked(articleData.content);
 
             return urlModel.where({ 'url': url }).select().then(function(data) {
                 if (data.length > 0) {
@@ -251,7 +252,7 @@ module.exports = Controller(function() {
             });
         },
 
-        escapeHtml: function(content, newContent) {
+        filterContent: function(content, newContent, filterFn) {
             newContent = newContent || [];
             var sp = '```', sl = sp.length;
             var i1 = content.indexOf(sp);
@@ -262,14 +263,14 @@ module.exports = Controller(function() {
                 if (i2 != -1) {
                     var code = content.substring(0, i2);
                     content = content.substring(i2 + sl);
-                    newContent.push(escapeHTMLWithoutGT(c1), sp, code, sp);
-                    return this.escapeHtml(content, newContent);
+                    newContent.push(filterFn(c1), sp, code, sp);
+                    return this.filterContent(content, newContent, filterFn);
                 } else {
-                    newContent.push(escapeHTMLWithoutGT(c1), sp, escapeHTMLWithoutGT(content));
+                    newContent.push(filterFn(c1), sp, filterFn(content));
                     return newContent;
                 }
             } else {
-                newContent.push(escapeHTMLWithoutGT(content));
+                newContent.push(filterFn(content));
                 return newContent;
             }
         },
@@ -287,7 +288,7 @@ module.exports = Controller(function() {
                             articleModel.getArticlesByUrlId(article[0].url_id),
                             articleModel.getLatest()
                         ]).then(function(data) {
-                            article[0].markedContent = marked(article[0].content);
+                            article[0].markedContent = article[0].marked_content || marked(article[0].content);
                             self.assign('title', article[0].title);
                             self.assign('article', article[0]);
                             self.assign('relatives', data[0]);

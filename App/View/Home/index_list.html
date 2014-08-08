@@ -24,8 +24,8 @@
         return window.pageYOffset || window.scrollY || document.documentElement.scrollTop;
     }
 
-    var page = '<%= http.get.page || 1 %>';
-    var size = '<%= size %>';
+    var page = <%= http.get.page || 1 %>;
+    var size = <%= size %>;
     var keyword = '<%= http.get.keyword || '' %>';
     var tag = '<%= http.get.tag || '' %>';
 
