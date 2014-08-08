@@ -146,6 +146,8 @@ module.exports = Controller(function() {
                     '.tab-content .comment-content .comment-body', // Github issue
                     '.page .pattern-bg-lighter section:nth-child(2)', // www.html5rocks.com
                     '.zh-question-answer-wrapper .zm-editable-content', // 知乎回答
+                    '.safe_school_topics_cont', // security.tencent.com
+                    '.text_info_article', // www.infoq.com
                     '#content .content_text .content_banner > .text', // www.alloyteam.com
                     '#content .content-bd .post-bd', // ued.taobao.com
                     '#content article .entry', // www.aliued.cn
@@ -157,7 +159,6 @@ module.exports = Controller(function() {
                     'article .entry-content', // www.imququ.com
                     '.content .article', // www.36kr.com
                     'article .article', // www.welefen.com
-                    '.safe_school_topics_cont', // security.tencent.com
                     'article .content',
                     '.entry-content',
                     '.content',
@@ -224,6 +225,9 @@ module.exports = Controller(function() {
             if (!url || !articleData.title || !articleData.tag || !articleData.content) {
                 return self.redirectIndex('不合法的请求参数，标题、标签、内容不能为空！');
             }
+
+            articleData.content = self.escapeHtml(articleData.content).join('');
+
             return urlModel.where({ 'url': url }).select().then(function(data) {
                 if (data.length > 0) {
                     articleData.url_id = data[0].id;
@@ -247,6 +251,29 @@ module.exports = Controller(function() {
             });
         },
 
+        escapeHtml: function(content, newContent) {
+            newContent = newContent || [];
+            var sp = '```', sl = sp.length;
+            var i1 = content.indexOf(sp);
+            if (i1 != -1) {
+                var c1 = content.substring(0, i1);
+                content = content.substring(i1 + sl);
+                var i2 = content.indexOf(sp);
+                if (i2 != -1) {
+                    var code = content.substring(0, i2);
+                    content = content.substring(i2 + sl);
+                    newContent.push(escapeHTMLWithoutGT(c1), sp, code, sp);
+                    return this.escapeHtml(content, newContent);
+                } else {
+                    newContent.push(escapeHTMLWithoutGT(c1), sp, escapeHTMLWithoutGT(content));
+                    return newContent;
+                }
+            } else {
+                newContent.push(escapeHTMLWithoutGT(content));
+                return newContent;
+            }
+        },
+
         detailAction: function() {
             var self = this;
             var id = self.get('id');
@@ -260,7 +287,7 @@ module.exports = Controller(function() {
                             articleModel.getArticlesByUrlId(article[0].url_id),
                             articleModel.getLatest()
                         ]).then(function(data) {
-                            article[0].markedContent = marked(escapeHTMLWithoutGT(article[0].content));
+                            article[0].markedContent = marked(article[0].content);
                             self.assign('title', article[0].title);
                             self.assign('article', article[0]);
                             self.assign('relatives', data[0]);
