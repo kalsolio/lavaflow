@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = Controller(function() {
-    var url = require('url');
+    var urlMod = require('url');
     var request = require('request');
     var cheerio = require('cheerio');
     var marked = require('marked');
@@ -13,7 +13,39 @@ module.exports = Controller(function() {
         'Referer': ''
     };
 
-    var tagTimeout = 300; // 单位s
+    var tagExpired = 300; // 单位s
+
+    var specialSelectors = [
+        [/github\.com/, '.tab-content .comment-content .comment-body'], // Github issue
+        [/html5rocks\.com/, '.page .pattern-bg-lighter section:nth-child(2)'], // www.html5rocks.com
+        [/infoq\.com/, '.text_info_article'], // www.infoq.com
+        [/csdn\.net/, '.article_content'], // blog.csdn.net
+        [/aliued\.cn/, '#content article .entry'], // www.aliued.cn
+        [/alloyteam\.com/, '#content .content_text .content_banner > .text'], // www.alloyteam.com
+        [/ued\.taobao\.com/, '#content .content-bd .post-bd'], // ued.taobao.com
+        [/security\.tencent\.com/, '.safe_school_topics_cont'], // security.tencent.com
+
+        [/www\.zhihu\.com/, '.zh-question-answer-wrapper .zm-editable-content'], // 知乎回答
+        [/zhuanlan\.zhihu\.com/, '.entry .entry-content'], // 知乎专栏
+        [/cssforest\.org/, '#content .entrybody'], // www.cssforest.org
+        [/coolshell\.cn/, '#content .content'], // www.coolshell.cn
+        [/36kr\.com/, '.content .article'], // www.36kr.com
+
+        [/ruanyifeng\.com/, '#content .entry-content'], // www.ruanyifeng.com
+        [/zhangxinxu\.com/, '#content .entry'], // www.zhangxinxu.com
+        [/imququ\.com/, 'article .entry-content'], // www.imququ.com
+        [/welefen\.com/, 'article .article'] // www.welefen.com
+    ];
+
+    function getSpecialSelector(url) {
+        var hostname = urlMod.parse(url).hostname;
+        for (var i = 0, len = specialSelectors.length; i < len; i++) {
+            if (specialSelectors[i][0].test(hostname)) {
+                return specialSelectors[i][1];
+            }
+        }
+        return null;
+    }
 
     function getPage(url) {
         var deferred = getDefer();
@@ -43,6 +75,30 @@ module.exports = Controller(function() {
         }
     }
 
+    function filterContent(content, newContent, filterFn) {
+        newContent = newContent || [];
+        filterFn = filterFn || escapeHTMLWithoutGT;
+        var sp = '```', sl = sp.length;
+        var i1 = content.indexOf(sp);
+        if (i1 != -1) {
+            var c1 = content.substring(0, i1);
+            content = content.substring(i1 + sl);
+            var i2 = content.indexOf(sp);
+            if (i2 != -1) {
+                var code = content.substring(0, i2);
+                content = content.substring(i2 + sl);
+                newContent.push(filterFn(c1), sp, code, sp);
+                return filterContent(content, newContent, filterFn);
+            } else {
+                newContent.push(filterFn(c1), sp, filterFn(content));
+                return newContent;
+            }
+        } else {
+            newContent.push(filterFn(content));
+            return newContent;
+        }
+    }
+
     return {
         init: function(http) {
             this.super('init', http);
@@ -63,7 +119,7 @@ module.exports = Controller(function() {
 
         getTags: function() {
             return S('tags').then(function(tagCache) {
-                if (!tagCache || (tagCache.lastModified + tagTimeout * 1000) < Date.now()) {
+                if (!tagCache || (tagCache.lastModified + tagExpired * 1000) < Date.now()) {
                     return D('Article').getTags().then(function(data) {
                         var tags = {};
                         data.forEach(function(o) {
@@ -139,44 +195,43 @@ module.exports = Controller(function() {
                 $('head').append('<meta charset="utf-8">');
                 title = $('title').html();
 
+                var selectors = [];
                 var selector = self.get('selector');
+                if (selector) {
+                    selectors.push(selector);
+                }
+                selector = getSpecialSelector(url);
+                if (selector) {
+                    selectors.push(selector);
+                }
 
                 // selectors的顺序不能随意更改，选取器顺序表示探测优先级
-                var selectors = [
-                    '.tab-content .comment-content .comment-body', // Github issue
-                    '.page .pattern-bg-lighter section:nth-child(2)', // www.html5rocks.com
-                    '.zh-question-answer-wrapper .zm-editable-content', // 知乎回答
-                    '.safe_school_topics_cont', // security.tencent.com
-                    '.text_info_article', // www.infoq.com
-                    '#content .content_text .content_banner > .text', // www.alloyteam.com
-                    '#content .content-bd .post-bd', // ued.taobao.com
-                    '#content article .entry', // www.aliued.cn
-                    '#content .entry-content', // www.ruanyifeng.com
-                    '#content .entry', // www.zhangxinxu.com
-                    '#content .content', // www.coolshell.cn
-                    '#content .entrybody', // www.cssforest.org
-                    '.entry .entry-content', // 知乎专栏
-                    'article .entry-content', // www.imququ.com
-                    '.content .article', // www.36kr.com
-                    'article .article', // www.welefen.com
-                    '.article_content', // blog.csdn.net
+                selectors = selectors.concat([
+                    '#content .content-bd .post-bd',
+                    '#content article .entry',
+                    '#content .entry-content',
+                    '#content .entry',
+                    '#content .content',
+                    '#content .entrybody',
+                    '.entry .entry-content',
+                    '.content .article',
+                    'article .entry-content',
+                    'article .article',
                     'article .content',
+                    'article .post',
+                    'article .post-bd',
+                    '.article_content',
                     '.entry-content',
                     '.content',
                     '.content-bd',
                     '#content',
                     '.entry',
-                    'article .post',
-                    'article .post-bd',
                     'article',
                     '.article',
                     '.post',
                     '.post-bd',
                     'body'
-                ];
-                if (selector) {
-                    selectors.unshift(selector);
-                }
+                ]);
                 content = getContent($, selectors);
 
                 // 过滤掉所有html2markdown不解析的标签
@@ -192,7 +247,7 @@ module.exports = Controller(function() {
                 // toMarkdown 组件现在解析<code> 标签不正确，需要重新转义一次
                 content = content.replace(/`/g, '\n```\n');
                 content = content.replace(/\n!\[*/g, '\n\n!\[');
-                content = self.filterContent(content, null, function(str) { return str.replace(/\n */g, '\n'); }).join('');
+                content = filterContent(content, null, function(str) { return str.replace(/\n */g, '\n'); }).join('');
 
                 attrs.url = url;
                 attrs.title = title;
@@ -227,7 +282,7 @@ module.exports = Controller(function() {
                 return self.redirectIndex('不合法的请求参数，标题、标签、内容不能为空！');
             }
 
-            articleData.content = self.filterContent(articleData.content, null, escapeHTMLWithoutGT).join('');
+            articleData.content = filterContent(articleData.content).join('');
             articleData.marked_content = marked(articleData.content);
 
             return urlModel.where({ 'url': url }).select().then(function(data) {
@@ -251,29 +306,6 @@ module.exports = Controller(function() {
             }).catch(function() {
                 return self.redirectIndex('提交失败', 'url=' + encodeURIComponent(url));
             });
-        },
-
-        filterContent: function(content, newContent, filterFn) {
-            newContent = newContent || [];
-            var sp = '```', sl = sp.length;
-            var i1 = content.indexOf(sp);
-            if (i1 != -1) {
-                var c1 = content.substring(0, i1);
-                content = content.substring(i1 + sl);
-                var i2 = content.indexOf(sp);
-                if (i2 != -1) {
-                    var code = content.substring(0, i2);
-                    content = content.substring(i2 + sl);
-                    newContent.push(filterFn(c1), sp, code, sp);
-                    return this.filterContent(content, newContent, filterFn);
-                } else {
-                    newContent.push(filterFn(c1), sp, filterFn(content));
-                    return newContent;
-                }
-            } else {
-                newContent.push(filterFn(content));
-                return newContent;
-            }
         },
 
         detailAction: function() {
@@ -323,10 +355,10 @@ module.exports = Controller(function() {
 
         showImageAction: function() {
             var imgUrl = this.get('img');
-            var urlObj = url.parse(imgUrl);
+            var urlObj = urlMod.parse(imgUrl);
             urlObj.protocol = urlObj.protocol || 'http:';
             var img = request({
-                url: url.format(urlObj),
+                url: urlMod.format(urlObj),
                 headers: REQUEST_HEADERS
             });
             this.http.req.pipe(img);
