@@ -1,6 +1,6 @@
 Lavaflow
 ========
-> Lavaflow是一个文章收录系统，将抓获的HTML转义成`markdown`格式存储，人人都可以为它添加或更新条目。 - http://lavaflow.75team.com
+> Lavaflow是一个文章收录系统，将获取到的文章内容HTML转义成markdown格式存储，人人都可以为它添加或更新条目。 - http://lavaflow.75team.com
 
 Lavaflow基于ThinkJS（[http://www.thinkjs.org/](http://www.thinkjs.org/)）开发，它是ThinkJS的一个开源样例。
 
