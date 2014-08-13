@@ -8,12 +8,12 @@ module.exports = Controller(function() {
     var toMarkdown = require('to-markdown').toMarkdown;
     var validator = require('validator');
 
-    var REQUEST_HEADERS = {
+    var GHOST_REQUEST_HEADERS = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2101.0 Safari/537.36',
         'Referer': ''
     };
 
-    var tagExpired = 300; // 单位s
+    var tagExpires = 300; // 单位s
 
     var specialSelectors = [
         // 博客
@@ -84,7 +84,7 @@ module.exports = Controller(function() {
         var deferred = getDefer();
         request({
             url: url,
-            headers: REQUEST_HEADERS
+            headers: GHOST_REQUEST_HEADERS
         }, function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 deferred.resolve(body);
@@ -152,7 +152,7 @@ module.exports = Controller(function() {
 
         getTags: function() {
             return S('tags').then(function(tagCache) {
-                if (!tagCache || (tagCache.lastModified + tagExpired * 1000) < Date.now()) {
+                if (!tagCache || (tagCache.lastModified + tagExpires * 1000) < Date.now()) {
                     return D('Article').getTags().then(function(data) {
                         var tags = {};
                         data.forEach(function(o) {
@@ -393,7 +393,7 @@ module.exports = Controller(function() {
             urlObj.protocol = urlObj.protocol || 'http:';
             var img = request({
                 url: urlMod.format(urlObj),
-                headers: REQUEST_HEADERS
+                headers: GHOST_REQUEST_HEADERS
             });
             this.http.req.pipe(img);
             img.pipe(this.http.res);
