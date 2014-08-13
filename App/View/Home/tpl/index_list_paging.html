@@ -11,7 +11,7 @@
                 <% }); %> /
                 版本：<%=: article | getVersion %>
             </p>
-            <%= article.content.substring(0, 300) %>
+            <%= article.content.substring(0, 300).replace(/\n/g, '') %>
         </div>
     </div>
 <% }); %>

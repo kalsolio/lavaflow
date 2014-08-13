@@ -31,8 +31,8 @@ module.exports = {
     cache_gc_hour: [4], // 缓存清除的时间点，数据为小时
 
     log_record: true, // 是否记录日志，开启后会重写console.log等系列方法
-    log_file_path: LOG_PATH, // 日志文件存在路径
-    log_console_type: ['error'], // 默认只接管console.error日志
+    log_file_path: LOG_PATH + '/console', // 日志文件存在路径
+    log_console_type: ['error', 'warn'], // 默认只接管console.error日志
 
     load_ext_config: ['admin'],
     error_tpl_path: VIEW_PATH + '/error.html', // 错误页模版

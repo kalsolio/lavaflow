@@ -16,25 +16,30 @@ module.exports = Controller(function() {
     var tagExpired = 300; // 单位s
 
     var specialSelectors = [
+        // 博客
         [/github\.com/, '.tab-content .comment-content .comment-body'], // Github issue
-        [/html5rocks\.com/, '.page .pattern-bg-lighter section:nth-child(2)'], // www.html5rocks.com
-        [/infoq\.com/, '.text_info_article'], // www.infoq.com
         [/csdn\.net/, '.article_content'], // blog.csdn.net
+        [/cnblogs\.com/, '#cnblogs_post_body'], // www.cnblogs.com
         [/aliued\.cn/, '#content article .entry'], // www.aliued.cn
         [/alloyteam\.com/, '#content .content_text .content_banner > .text'], // www.alloyteam.com
         [/ued\.taobao\.com/, '#content .content-bd .post-bd'], // ued.taobao.com
-        [/security\.tencent\.com/, '.safe_school_topics_cont'], // security.tencent.com
+        [/ruanyifeng\.com/, '#content .entry-content'], // www.ruanyifeng.com
+        [/zhangxinxu\.com/, '#content .entry'], // www.zhangxinxu.com
+        [/imququ\.com/, 'article .entry-content'], // www.imququ.com
+        [/welefen\.com/, 'article .article'], // www.welefen.com
 
+        // 社区
+        [/html5rocks\.com/, '.page .pattern-bg-lighter section:nth-child(2)'], // www.html5rocks.com
+        [/infoq\.com/, '.text_info_article'], // www.infoq.com
         [/www\.zhihu\.com/, '.zh-question-answer-wrapper .zm-editable-content'], // 知乎回答
         [/zhuanlan\.zhihu\.com/, '.entry .entry-content'], // 知乎专栏
         [/cssforest\.org/, '#content .entrybody'], // www.cssforest.org
         [/coolshell\.cn/, '#content .content'], // www.coolshell.cn
         [/36kr\.com/, '.content .article'], // www.36kr.com
+        [/mp\.weixin\.qq\.com/, '.rich_media_content'], // mp.weixin.qq.com
 
-        [/ruanyifeng\.com/, '#content .entry-content'], // www.ruanyifeng.com
-        [/zhangxinxu\.com/, '#content .entry'], // www.zhangxinxu.com
-        [/imququ\.com/, 'article .entry-content'], // www.imququ.com
-        [/welefen\.com/, 'article .article'] // www.welefen.com
+        // Other
+        [/security\.tencent\.com/, '.safe_school_topics_cont'] // security.tencent.com
     ];
 
     // selectors的顺序不能随意更改，选取器顺序表示探测优先级
@@ -130,7 +135,7 @@ module.exports = Controller(function() {
     return {
         init: function(http) {
             this.super('init', http);
-            this.assign('title', '');
+            this.assign('exInfo', {});
         },
 
         indexAction: function() {
@@ -191,15 +196,15 @@ module.exports = Controller(function() {
             } else if (!validator.isURL(url)) {
                 return self.redirectIndex('请输入一个合法的URL');
             } else {
-                return D('Url').where({ 'url': url }).select().then(function(data) {
+                return D('Url').where({ 'url': url }).find().then(function(urlData) {
                     var attrs = {};
 
                     // 如果文章已收录，那么将URL 提示到页面上
-                    if (data.length > 0) {
-                        return D('Article').where({ 'id': data[0].last_version_aid }).select().then(function(data) {
-                            if (data.length > 0) {
-                                attrs.lastVersionUrl = C('lf_host') + '/detail/' + data[0].id;
-                                attrs.tag = data[0].tag;
+                    if (!isEmpty(urlData)) {
+                        return D('Article').getArticle(urlData.last_version_aid, true).then(function(article) {
+                            if (!isEmpty(article)) {
+                                attrs.lastVersionUrl = C('lf_host') + '/detail/' + article.id;
+                                attrs.tag = article.tag;
                             }
                             return self.capturePage(url, attrs);
                         });
@@ -237,11 +242,13 @@ module.exports = Controller(function() {
 
                 // 过滤掉所有html2markdown不解析的标签
                 content = content.replace(/\t/g, '    ');
-                content = content.replace(/<(\/)?([^ >]*)( [^\f\n\r\t\v>]*)?\/?>/gi, function(s, s1, s2) {
+                content = content.replace(/<(\/)?([^ >]*)( [^\f\n\r\t\v>]*)?(\/)?>/gi, function(s, s1, s2, s3, s4) {
                     if (/^pre/i.test(s2)) {
                         return s1 != '/' ? '<code>' : '</code>';
+                    } else if (/^(img|a)/i.test(s2)) {
+                        return s;
                     }
-                    return /^(h[1-9]|hr|br|title|b|strong|i|em|dfn|var|city|ul|ol|dl|li|blockquote|pre|p|img|a)$/i.test(s2) ? s : '';
+                    return /^(h[1-9]|hr|br|title|b|strong|i|em|dfn|var|city|ul|ol|dl|li|blockquote|pre|p|del)/i.test(s2) ? ('<' + (s1 || '') + s2 + (s4 || '') + '>') : '';
                 });
                 content = content ? toMarkdown(content) : '';
 
@@ -263,6 +270,15 @@ module.exports = Controller(function() {
                     return '\n\n' + s + '\n\n';
                 });
 
+                // 防止图片路径出现非法URL
+                content = content.replace(/!\[([^\]]*)\]\(([^\)]+)\)/g, function(s, s1, s2) {
+                    var s2m = s2.match(/[^ ]*/);
+                    if (s2m) {
+                        s2 = s2m[0];
+                    }
+                    return '![' + s1 + '](' + s2 + ')';
+                });
+
                 attrs.url = url;
                 attrs.title = title;
                 attrs.content = content;
@@ -280,7 +296,7 @@ module.exports = Controller(function() {
             var tags = [];
             tag.replace(/\u0020|\uFF0C/g, ',').split(',').forEach(function(t) {
                 t = t.trim();
-                if (t) {
+                if (t && tags.indexOf(t) == -1) {
                     tags.push(t);
                 }
             });
@@ -299,10 +315,10 @@ module.exports = Controller(function() {
             articleData.content = filterContent(articleData.content).join('');
             articleData.marked_content = marked(articleData.content);
 
-            return urlModel.where({ 'url': url }).select().then(function(data) {
-                if (data.length > 0) {
-                    articleData.url_id = data[0].id;
-                    articleData.version = (data[0].last_version + 1);
+            return urlModel.where({ 'url': url }).find().then(function(urlData) {
+                if (!isEmpty(urlData)) {
+                    articleData.url_id = urlData.id;
+                    articleData.version = (urlData.last_version + 1);
                     return articleModel.addArticle(articleData).then(function(aid) {
                         return self.redirectDetail('文章收录成功，当前版本：' + getVersion({ version: articleData.version, create_time: new Date() }), aid);
                     });
@@ -330,14 +346,18 @@ module.exports = Controller(function() {
             } else {
                 var articleModel = D('Article');
                 return articleModel.getArticle(id).then(function(article) {
-                    if (article.length > 0) {
+                    if (!isEmpty(article)) {
                         return Promise.all([
-                            articleModel.getArticlesByUrlId(article[0].url_id),
+                            articleModel.getArticlesByUrlId(article.url_id),
                             articleModel.getLatest()
                         ]).then(function(data) {
-                            article[0].markedContent = article[0].marked_content || marked(article[0].content);
-                            self.assign('title', article[0].title);
-                            self.assign('article', article[0]);
+                            article.markedContent = article.marked_content || marked(article.content);
+                            self.assign('exInfo', {
+                                title: article.title,
+                                keywords: article.tag,
+                                description: article.content.substring(0, 100).replace(/\n/g, ''),
+                            });
+                            self.assign('article', article);
                             self.assign('relatives', data[0]);
                             self.assign('latest', data[1]);
                             return self.display();

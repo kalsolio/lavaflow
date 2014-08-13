@@ -4,16 +4,18 @@ module.exports = Model(function() {
     var timeout = 60;
 
     return {
-        getArticle: function(id) {
-            return this.where({ 'id': id })
-                .cache(timeout)
-                .select()
-                .then(function(data) {
-                    if (data.length > 0) {
-                        data[0].content = data[0].content.toString();
-                    }
-                    return data;
-                });
+        getArticle: function(id, noCache) {
+            var p = this.where({ 'id': id });
+            if (noCache !== true) {
+                p.cache(timeout);
+            }
+            return p.find().then(function(data) {
+                if (!isEmpty(data)) {
+                    data.content = data.content.toString();
+                    data.marked_content = data.marked_content ? data.marked_content.toString() : '';
+                }
+                return data;
+            });
         },
 
         addArticle: function(data) {
@@ -44,6 +46,7 @@ module.exports = Model(function() {
                 .then(function(data) {
                     for (var i = 0, len = data.length; i < len; i++) {
                         data[i].content = data[i].content.toString();
+                        data[i].marked_content = data[i].marked_content ? data[i].marked_content.toString() : '';
                     }
                     return data;
                 });

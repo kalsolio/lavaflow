@@ -69,9 +69,9 @@ module.exports = Controller(function() {
             var self = this;
             var id = self.post('id');
             var articleModel = D('Article');
-            return articleModel.where({ 'id': id }).select().then(function(data) {
-                if (data.length > 0) {
-                    var urlId = data[0].url_id;
+            return articleModel.getArticle(id, true).then(function(article) {
+                if (!isEmpty(article)) {
+                    var urlId = article.url_id;
                     return articleModel.delArticle(id).then(function() {
                         return articleModel.query('SELECT `id`,max(`version`) as `max_version` FROM __ARTICLE__ where `url_id`=' + urlId).then(function(data) {
                             var lastVersion, lastAid;
