@@ -21,8 +21,7 @@
             <div class="panel panel-default lf-panel lf-tags">
                 <div class="panel-heading">标签索引</div>
                 <div class="panel-body">
-                    <% for (var i = 0; i < tags.length; i++) { %>
-                        <% if (i >= 35) break; %>
+                    <% for (var i = 0; i < tags.length && i < 35; i++) { %>
                         <a href="/list?tag=<%= encodeURIComponent(tags[i][0]) %>"><span class="label label-default" style="background-color:<%= getTagColor() %>;"><%= tags[i][0] %></span></a>
                     <% } %>
                 </div>
