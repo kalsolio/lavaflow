@@ -51,6 +51,7 @@ module.exports = Controller(function() {
         '#content .content',
         '#content .entrybody',
         '.entry .entry-content',
+        '.content .detail-article',
         '.content .article',
         'article .entry-content',
         'article .article',
@@ -270,13 +271,13 @@ module.exports = Controller(function() {
                     return '\n\n' + s + '\n\n';
                 });
 
-                // 防止图片路径出现非法URL
-                content = content.replace(/!\[([^\]]*)\]\(([^\)]+)\)/g, function(s, s1, s2) {
+                // 防止URL或图片路径出现非法URL
+                content = content.replace(/\[([^\]]*)\]\(([^\)]+)\)/g, function(s, s1, s2) {
                     var s2m = s2.match(/[^ ]*/);
                     if (s2m) {
                         s2 = s2m[0];
                     }
-                    return '![' + s1 + '](' + s2 + ')';
+                    return '[' + s1 + '](' + s2 + ')';
                 });
 
                 attrs.url = url;
