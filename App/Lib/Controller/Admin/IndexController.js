@@ -16,7 +16,11 @@ module.exports = Controller(function() {
             } else {
                 return self.session("user").then(function(data) {
                     if (isEmpty(data)) {
-                        return self.redirect("/login");
+                        if (self.isAjax()) {
+    						return self.error(403);
+    					} else {
+                            return self.redirect("/login");
+    					}
                     } else {
                         self.user = data;
                     }

@@ -13,7 +13,7 @@ module.exports = {
 
     //缓存配置
     db_cache_on: true, // 是否启用查询缓存，如果关闭那么cache方法则无效
-    db_cache_type: '', // 缓存类型，默认为内存缓存
+    db_cache_type: 'File', // 缓存类型，默认为内存缓存
     db_cache_path: CACHE_PATH + '/db', //缓存路径，File类型下有效
     db_cache_timeout: 3600, // 缓存时间，默认为1个小时
 

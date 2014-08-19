@@ -59,6 +59,7 @@ module.exports = Controller(function() {
         'article .post',
         'article .post-bd',
         '.article_content',
+        '.detail-article',
         '.entry-content',
         '.content',
         '.content-bd',
@@ -352,22 +353,36 @@ module.exports = Controller(function() {
                             articleModel.getArticlesByUrlId(article.url_id),
                             articleModel.getLatest()
                         ]).then(function(data) {
-                            article.markedContent = article.marked_content || marked(article.content);
-                            self.assign('exInfo', {
-                                title: article.title,
-                                keywords: article.tag,
-                                description: article.content.substring(0, 100).replace(/\n/g, ''),
-                            });
-                            self.assign('article', article);
-                            self.assign('relatives', data[0]);
-                            self.assign('latest', data[1]);
-                            return self.display();
+                            if (!article.marked_content) {
+                                article.markedContent = marked(article.content);
+                                articleModel.where({ id: id }).update({
+                                    marked_content: article.markedContent
+                                }).then(function() {
+                                    return self.displayDetail(article, data);
+                                });
+                            } else {
+                                article.markedContent = article.marked_content;
+                                return self.displayDetail(article, data);
+                            }
                         });
                     } else {
                         return self.redirectIndex('文章还没被收录');
                     }
                 });
             }
+        },
+
+        displayDetail: function(article, data) {
+            var self = this;
+            self.assign('exInfo', {
+                title: article.title,
+                keywords: article.tag,
+                description: article.content.substring(0, 100).replace(/\n/g, ''),
+            });
+            self.assign('article', article);
+            self.assign('relatives', data[0]);
+            self.assign('latest', data[1]);
+            return self.display();
         },
 
         pageSize: 20,

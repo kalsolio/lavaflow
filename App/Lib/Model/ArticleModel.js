@@ -10,10 +10,6 @@ module.exports = Model(function() {
                 p.cache(timeout);
             }
             return p.find().then(function(data) {
-                if (!isEmpty(data)) {
-                    data.content = data.content.toString();
-                    data.marked_content = data.marked_content ? data.marked_content.toString() : '';
-                }
                 return data;
             });
         },
@@ -44,10 +40,6 @@ module.exports = Model(function() {
             return this.cache(timeout)
                 .query(sql.join(''))
                 .then(function(data) {
-                    for (var i = 0, len = data.length; i < len; i++) {
-                        data[i].content = data[i].content.toString();
-                        data[i].marked_content = data[i].marked_content ? data[i].marked_content.toString() : '';
-                    }
                     return data;
                 });
         },

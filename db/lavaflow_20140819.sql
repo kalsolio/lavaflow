@@ -30,12 +30,12 @@ CREATE TABLE `lf_article` (
   `tag` varchar(500) NOT NULL,
   `contributor` varchar(200) DEFAULT NULL,
   `contributor_website` varchar(1024) DEFAULT NULL,
-  `content` blob NOT NULL,
+  `content` longtext NOT NULL,
+  `marked_content` longtext DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `version` int(11) NOT NULL,
   `url_id` int(11) NOT NULL,
   `url` varchar(2048) NOT NULL COMMENT '文章URL，冗余字段',
-  `marked_content` blob,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -65,4 +65,4 @@ CREATE TABLE `lf_url` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-08-08 14:19:43
+-- Dump completed on 2014-08-19 11:54:41
