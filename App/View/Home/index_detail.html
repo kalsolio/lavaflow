@@ -89,7 +89,8 @@ $(function() {
     $('.lf-detail-article .content img').each(function() {
         var $img = $(this);
         var url = $img.attr('src');
-        if (/zhimg\.com/.test(url) // 知乎
+        if (/zhimg\.com/.test(url) || // 知乎
+            /geek100\.com/.test(url)
             ) {
                 $img.attr('src', '/home/index/showImage?img=' + encodeURIComponent(url));
             }

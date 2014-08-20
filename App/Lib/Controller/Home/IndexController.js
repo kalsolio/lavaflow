@@ -37,6 +37,7 @@ module.exports = Controller(function() {
         [/coolshell\.cn/, '#content .content'], // www.coolshell.cn
         [/36kr\.com/, '.content .article'], // www.36kr.com
         [/mp\.weixin\.qq\.com/, '.rich_media_content'], // mp.weixin.qq.com
+        [/geek100\.com/, '.content .post'], // geek100.com
 
         // Other
         [/security\.tencent\.com/, '.safe_school_topics_cont'] // security.tencent.com
@@ -53,6 +54,7 @@ module.exports = Controller(function() {
         '.entry .entry-content',
         '.content .detail-article',
         '.content .article',
+        '.content .post',
         'article .entry-content',
         'article .article',
         'article .content',
@@ -279,6 +281,10 @@ module.exports = Controller(function() {
                         s2 = s2m[0];
                     }
                     return '[' + s1 + '](' + s2 + ')';
+                });
+
+                content = content.replace(/> *\n*```/g, function() {
+                    return '> \n\n```';
                 });
 
                 attrs.url = url;
