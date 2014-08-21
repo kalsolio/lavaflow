@@ -64,8 +64,14 @@
     $website.val(localStorage.getItem('lavaflow/capture/website'));
 
     $('.container form').on('submit', function() {
+        $(window).off('beforeunload', unload);
         $('.container form button[type="submit"]').attr('disabled', true).html('提交中...');
     });
+
+    $(window).on('beforeunload', unload);
+    function unload() {
+        return '文章尚未提交';
+    }
 }(window));
 </script>
 
