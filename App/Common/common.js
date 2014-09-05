@@ -48,7 +48,7 @@ global.escapeSQL = function(str) {
             return '\\' + s;
         }
     });
-}
+};
 
 global.getTagColor = function() {
     var color;
@@ -85,7 +85,7 @@ global.getTagColor = function() {
             break;
     }
     return color;
-}
+};
 
 global.getVersion = function(o) {
     return 'v' + o.version + '-' + moment(o.create_time).format('YYYYMMDD');

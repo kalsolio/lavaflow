@@ -1,6 +1,6 @@
-'use strict';
-
 module.exports = Controller(function() {
+    'use strict';
+    
     var md5 = require('MD5');
 
     return {

@@ -1,6 +1,6 @@
-'use strict';
-
 module.exports = Model(function() {
+    'use strict';
+    
     var timeout = 60;
 
     return {

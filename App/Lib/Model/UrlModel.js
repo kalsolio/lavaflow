@@ -1,6 +1,6 @@
-'use strict';
-
 module.exports = Model(function() {
+    'use strict';
+    
     return {
         updateUrl: function(id, lastVersion, lastAid) {
             return this.where({ 'id': id }).update({

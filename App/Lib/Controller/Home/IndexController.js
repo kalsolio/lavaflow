@@ -1,9 +1,10 @@
-'use strict';
-
 module.exports = Controller(function() {
+    'use strict';
+    
     var urlMod = require('url');
     var request = require('request');
     var cheerio = require('cheerio');
+    var htmlparser = require('htmlparser2');
     var marked = require('marked');
     var toMarkdown = require('to-markdown').toMarkdown;
     var validator = require('validator');
@@ -60,6 +61,7 @@ module.exports = Controller(function() {
         'article .content',
         'article .post',
         'article .post-bd',
+        '#content article',
         '.article_content',
         '.detail-article',
         '.entry-content',
@@ -134,6 +136,49 @@ module.exports = Controller(function() {
             newContent.push(filterFn(content));
             return newContent;
         }
+    }
+    
+    function filterHTML(content) {
+        var arr = [];
+        // 过滤掉所有html2markdown不解析的标签
+        var re = /^(h[1-9]|hr|br|title|b|strong|i|em|dfn|var|city|ul|ol|dl|li|blockquote|pre|p|del|a|img)/i;
+        var parser = new htmlparser.Parser({
+            onopentag: function(tagName, attribs) {
+                if (!re.test(tagName)) {
+                    return;
+                }
+                if (tagName == 'pre') {
+                    tagName = 'code';
+                }
+                arr.push('<', tagName);
+                if (tagName == 'a' || tagName == 'img') {
+                    for (var o in attribs) {
+                        arr.push(' ', o, '="', escapeHTML(attribs[o]), '"');
+                    }
+                } 
+                arr.push('>');
+            },
+            ontext: function(text) {
+                arr.push(text);
+            },
+            onclosetag: function(tagName) {
+                if (!re.test(tagName)) {
+                    return;
+                }
+                if (tagName == 'img' ||
+                    tagName == 'br'||
+                    tagName == 'input') {
+                    return;
+                }
+                if (tagName == 'pre') {
+                    tagName = 'code';
+                }
+                arr.push('</', tagName, '>');
+            }
+        });
+        parser.write(content);
+        parser.end();
+        return arr.join('');
     }
 
     return {
@@ -245,15 +290,8 @@ module.exports = Controller(function() {
                 content = getContent($, selectors);
 
                 // 过滤掉所有html2markdown不解析的标签
-                content = content.replace(/\t/g, '    ');
-                content = content.replace(/<(\/)?([^ >]*)( [^\f\n\r\t\v>]*)?(\/)?>/gi, function(s, s1, s2, s3, s4) {
-                    if (/^pre/i.test(s2)) {
-                        return s1 != '/' ? '<code>' : '</code>';
-                    } else if (/^(img|a)/i.test(s2)) {
-                        return s;
-                    }
-                    return /^(h[1-9]|hr|br|title|b|strong|i|em|dfn|var|city|ul|ol|dl|li|blockquote|pre|p|del)/i.test(s2) ? ('<' + (s1 || '') + s2 + (s4 || '') + '>') : '';
-                });
+                content = filterHTML(content);
+                content = content.replace(/\t/g, '  ');
                 content = content ? toMarkdown(content) : '';
 
                 // toMarkdown 组件现在解析<code> 标签不正确，需要重新转义一次
