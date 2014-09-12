@@ -280,7 +280,7 @@ module.exports = Controller(function() {
                 var selectors = [];
                 var selector = self.get('selector');
                 if (selector) {
-                    selectors.push(selector);
+                    selectors.push(decodeURIComponent(selector));
                 }
                 selector = getSpecialSelector(url);
                 if (selector) {
