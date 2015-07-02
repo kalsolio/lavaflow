@@ -1,6 +1,6 @@
 module.exports = Controller(function() {
     'use strict';
-    
+
     var urlMod = require('url');
     var request = require('request');
     var cheerio = require('cheerio');
@@ -137,7 +137,7 @@ module.exports = Controller(function() {
             return newContent;
         }
     }
-    
+
     function filterHTML(content) {
         var arr = [];
         // 过滤掉所有html2markdown不解析的标签
@@ -155,7 +155,7 @@ module.exports = Controller(function() {
                     for (var o in attribs) {
                         arr.push(' ', o, '="', escapeHTML(attribs[o]), '"');
                     }
-                } 
+                }
                 arr.push('>');
             },
             ontext: function(text) {
